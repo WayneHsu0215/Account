@@ -85,7 +85,7 @@ router.delete('/trans/:TranID', async (req, res) => {
             .query('DELETE FROM Trans WHERE TranID = @TranID');
 
         if (result.rowsAffected[0] === 0) {
-            res.status(404).send('Transaction not found');
+            res.status(404).send('Transaction not found!!!!');
             return;
         }
 
