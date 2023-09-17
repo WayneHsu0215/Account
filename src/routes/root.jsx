@@ -1,5 +1,5 @@
 import  {useEffect, useState} from 'react';
-import Modal from './Model'
+import Modal from './Modal'
 
 const Root = () => {
     const [transactions, setTransactions] = useState([]);
