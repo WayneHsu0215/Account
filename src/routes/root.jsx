@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+
 const Root = () => {
     const [transactions, setTransactions] = useState([]);
 
@@ -44,6 +45,8 @@ const Root = () => {
         });
     };
 
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -77,6 +80,25 @@ const Root = () => {
         }
     };
 
+    //刪除
+    const deleteTransaction = async (tranID) => {
+        try {
+            const response = await fetch(`/api/trans/${tranID}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete transaction');
+            }
+
+            // Refresh the transaction list after deletion
+            fetchTransData();
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+        }
+    };
+
+
     const [searchTranID, setSearchTranID] = useState('');
     const [searchTrans, setSearchTrans] = useState(null);
     const searchTransaction = () => {
@@ -98,7 +120,6 @@ const Root = () => {
                 console.error('Error searching transaction:', error);
             });
     };
-
 
 
 
@@ -175,23 +196,20 @@ const Root = () => {
             </div>
 
 
-
-
-
-
-
             <div className="h-96 overflow-y-scroll mt-4 ">
-                <table className="min-w-full border-2">
+                <table className="min-w-full border-2 ">
                     <thead>
                     <tr>
-                        <th className="px-4 py-2">AccID</th>
-                        <th className="px-4 py-2">TranID</th>
-                        <th className="px-4 py-2">TranTime</th>
-                        <th className="px-4 py-2">AtmID</th>
-                        <th className="px-4 py-2">TranType</th>
-                        <th className="px-4 py-2">TranNote</th>
-                        <th className="px-4 py-2">UP_DATETIME</th>
-                        <th className="px-4 py-2">UP_USR</th>
+                        <th className="px-4 py-2 bg-green-500">AccID</th>
+                        <th className="px-4 py-2 bg-green-500">TranID</th>
+                        <th className="px-4 py-2 bg-green-500">TranTime</th>
+                        <th className="px-4 py-2 bg-green-500">AtmID</th>
+                        <th className="px-4 py-2 bg-green-500">TranType</th>
+                        <th className="px-4 py-2 bg-green-500">TranNote</th>
+                        <th className="px-4 py-2 bg-green-500">UP_DATETIME</th>
+                        <th className="px-4 py-2 bg-green-500">UP_USR</th>
+                        <th className="col-span-2 px-4 py-2 bg-green-500 ">DELETE</th>
+                        <th className="col-span-2 px-4 py-2 bg-green-500 ">EDIT</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -205,7 +223,6 @@ const Root = () => {
                             <td className="py-2 px-4 border">{searchTrans.TranNote}</td>
                             <td className="border px-4 py-2">{searchTrans.UP_DATETIME}</td>
                             <td className="border px-4 py-2">{searchTrans.UP_USR}</td>
-
                         </tr>
                     ) : (
                         transactions.map((transaction) => (
@@ -218,6 +235,12 @@ const Root = () => {
                                 <td className="border px-4 py-2">{transaction.TranNote}</td>
                                 <td className="border px-4 py-2">{transaction.UP_DATETIME}</td>
                                 <td className="border px-4 py-2">{transaction.UP_USR}</td>
+                                <td className="border px-8 ">
+                                    <button
+                                        className="px-8 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400"
+                                        onClick={() => deleteTransaction(transaction.TranID)}>刪除
+                                    </button>
+                                </td>
                             </tr>
                         )))}
                     </tbody>
