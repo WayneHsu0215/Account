@@ -37,8 +37,23 @@ const Root = () => {
     };
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editTransaction, setEditTransaction] = useState(null);
+    //打開新增交易Modal
     const openAddModal = () => {
         setIsAddModalOpen(true);
+        setIsEditModalOpen(false);
+    };
+    //打開修改交易Modal
+    const openEditModal = (transaction) => {
+        setEditTransaction(transaction);
+        setIsEditModalOpen(true);
+        setIsAddModalOpen(false);
+    };
+    //關閉Modal
+    const closeModal = () => {
+        setIsAddModalOpen(false);
+        setIsEditModalOpen(false);
     };
 
     const handleInputChange = (event) => {
@@ -48,7 +63,6 @@ const Root = () => {
             [name]: value,
         });
     };
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -78,7 +92,7 @@ const Root = () => {
 
             // 刷新交易列表
             fetchTransData();
-            setIsAddModalOpen(false);
+            closeModal();
         } catch (error) {
             console.error('Error adding new transaction:', error);
         }
@@ -100,13 +114,7 @@ const Root = () => {
         }
     };
 
-    //編輯
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editTransaction, setEditTransaction] = useState(null);
-    const openEditModal = (transaction) => {
-        setEditTransaction(transaction);
-        setIsModalOpen(true);
-    };
+    //修改
     const handleEditInputChange = (event, name) => {
         const newValue = event.target.value;
         setEditTransaction((prevTransaction) => ({
@@ -127,12 +135,27 @@ const Root = () => {
             if (!response.ok) {
                 throw new Error('Failed to update transaction');
             }
-            setIsModalOpen(false);
+            closeModal();
             fetchTransData();
         } catch (error) {
             console.error('Error updating transaction:', error);
             alert('資料錯誤，請再檢查一次(注意長度限制)');
         }
+    };
+
+    //checkbox
+    const [selectedTransactions, setSelectedTransactions] = useState([]);
+
+    // 一次刪除多筆資料
+    const handleCheckboxChange = (tranID) => {
+        //把勾選的交易加入陣列
+        setSelectedTransactions([...selectedTransactions, tranID]);
+    };
+    // 刪除勾選的交易
+    const handleDeleteSelected = () => {
+        selectedTransactions.forEach(deleteTransaction);
+        //刪除後已勾選交易陣列清空
+        setSelectedTransactions([]);
     };
 
     //查詢
@@ -165,7 +188,7 @@ const Root = () => {
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
             <h1 className="text-3xl font-semibold mb-4 m-8">Transaction List</h1>
             {/*新增表單*/}
-            <Modal isOpen={isAddModalOpen}  onClose={() => setIsAddModalOpen(false)}>
+            <Modal isOpen={isAddModalOpen}  onClose={() => closeModal()}>
             <form onSubmit={handleSubmit} className="w-full justify-between">
                 <input
                     type="text"
@@ -234,31 +257,34 @@ const Root = () => {
 
             {/*交易列表*/}
             <div className="h-screen w-full overflow-y-scroll mt-4 bg-slate-50 rounded-lg">
-                {/*<button type="submit"*/}
-                {/*        className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start">刪除*/}
-                {/*</button>*/}
-                <button type="submit"
-                        className="bg-green-300 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg" onClick={() => openAddModal()}>新增
-                </button>
+                {searchTrans ? (null) : (
+                    <>
+                        <button type="submit"
+                                className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start" onClick={handleDeleteSelected}>刪除
+                        </button>
+                        <button type="submit"
+                                className="bg-green-300 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg" onClick={() => openAddModal()}>新增
+                        </button>
+                    </>
+                )}
                 <table className="min-w-full border-2 ">
                     <thead>
                     <tr>
-                        {/*{searchTrans ? (null) : (*/}
-                        {/*        <th className="px-6 py-2 border">Check</th>*/}
-                        {/*)}*/}
-                        <th className="px-6 py-2 border">AccID</th>
-                        <th className="px-3 py-2 border">TranID</th>
-                        <th className="px-8 py-2 border">TranTime</th>
-                        <th className="px-6 py-2 border">AtmID</th>
-                        <th className="px-6 py-2 border">TranType</th>
-                        <th className="px-12 py-2 border">TranNote</th>
-                        <th className="px-6 py-2 border">UP_DATETIME</th>
-                        <th className="px-6 py-2 border">UP_USR</th>
-                        {/*如果全部顯示就出現按鈕*/}
+                        {searchTrans ? (null) : (
+                            <th className="px-6 py-2 border-b">Check</th>
+                        )}
+                        <th className="px-6 py-2 border-b">AccID</th>
+                        <th className="px-3 py-2 border-b">TranID</th>
+                        <th className="px-8 py-2 border-b">TranTime</th>
+                        <th className="px-6 py-2 border-b">AtmID</th>
+                        <th className="px-6 py-2 border-b">TranType</th>
+                        <th className="px-12 py-2 border-b">TranNote</th>
+                        <th className="px-6 py-2 border-b">UP_DATETIME</th>
+                        <th className="px-6 py-2 border-b">UP_USR</th>
                         {searchTrans ? (null) : (
                             <>
-                                <th className="px-4 py-2 border">DELETE</th>
-                                <th className="px-4 py-2 border">EDIT</th>
+                                <th className="px-4 py-2 border-b">DELETE</th>
+                                <th className="px-4 py-2 border-b">EDIT</th>
                             </>
                         )}
                     </tr>
@@ -266,43 +292,50 @@ const Root = () => {
                     <tbody>
                     {searchTrans ? ( // 如果有查詢結果
                         <tr>
-
-                            <td className="py-2 px-4 border">{searchTrans.AccID}</td>
-                            <td className="py-2 px-4 border">{searchTrans.TranID}</td>
-                            <td className="py-2 px-4 border">{searchTrans.TranTime}</td>
-                            <td className="py-2 px-4 border">{searchTrans.AtmID}</td>
-                            <td className="py-2 px-4 border">{searchTrans.TranType}</td>
-                            <td className="py-2 px-4 border">{searchTrans.TranNote}</td>
-                            <td className="border px-4 py-2">{searchTrans.UP_DATETIME}</td>
-                            <td className="border px-4 py-2">{searchTrans.UP_USR}</td>
+                            <td className="py-2 px-4 border-b">{searchTrans.AccID}</td>
+                            <td className="py-2 px-4 border-b">{searchTrans.TranID}</td>
+                            <td className="py-2 px-4 border-b">{searchTrans.TranTime}</td>
+                            <td className="py-2 px-4 border-b">{searchTrans.AtmID}</td>
+                            <td className="py-2 px-4 border-b">{searchTrans.TranType}</td>
+                            <td className="py-2 px-4 border-b">{searchTrans.TranNote}</td>
+                            <td className="border-b px-4 py-2">{searchTrans.UP_DATETIME}</td>
+                            <td className="border-b px-4 py-2">{searchTrans.UP_USR}</td>
                         </tr>
                     ) : (
                         transactions.map((transaction) => (
-                            <tr key={transaction.AccID}>
+                            <tr key={transaction.TranID}>
+                                <td className="py-2 px-4 border-b text-center">
+                                    <input
+                                        type="checkbox"
+                                        className="transform scale-150"
+                                        checked={selectedTransactions.includes(transaction.TranID)}
+                                        onChange={() => handleCheckboxChange(transaction.TranID)}
+                                    />
+                                </td>
                                 {/*<td className="py-2 px-4 border text-center"><input type="checkbox" className="transform scale-150"/></td>*/}
-                                <td className="border px-4 py-2">{transaction.AccID}</td>
-                                <td className="border px-4 py-2">{transaction.TranID}</td>
-                                <td className="border px-4 py-2">{transaction.TranTime}</td>
-                                <td className="border px-4 py-2">{transaction.AtmID}</td>
-                                <td className="border px-4 py-2">{transaction.TranType}</td>
-                                <td className="border px-4 py-2">{transaction.TranNote}</td>
-                                <td className="border px-4 py-2">{transaction.UP_DATETIME}</td>
-                                <td className="border px-4 py-2">{transaction.UP_USR}</td>
+                                <td className="border-b px-4 py-2">{transaction.AccID}</td>
+                                <td className="border-b px-4 py-2">{transaction.TranID}</td>
+                                <td className="border-b px-4 py-2">{transaction.TranTime}</td>
+                                <td className="border-b px-4 py-2">{transaction.AtmID}</td>
+                                <td className="border-b px-4 py-2">{transaction.TranType}</td>
+                                <td className="border-b px-4 py-2">{transaction.TranNote}</td>
+                                <td className="border-b px-4 py-2">{transaction.UP_DATETIME}</td>
+                                <td className="border-b px-4 py-2">{transaction.UP_USR}</td>
                                 {/*刪除按鈕*/}
-                                <td className="border px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
+                                <td className="border-b px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
                                     <button
                                         className="select-none px-8 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400"
                                         onClick={() => deleteTransaction(transaction.TranID)}>刪除
                                     </button>
                                 </td>
                                 {/*修改按鈕 + 打開modal*/}
-                                <td className="border px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
+                                <td className="border-b px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
                                     <button
                                         className="select-none px-8 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400"
                                         onClick={() => openEditModal(transaction)}>修改
                                     </button>
                                     {/*Modal內的顯示*/}
-                                    <Modal isOpen={isModalOpen}  onClose={() => setIsModalOpen(false)}>
+                                    <Modal isOpen={isEditModalOpen}  onClose={() => closeModal()}>
                                         <form className={"text-xl"}>
                                             <div className="flex items-center text-yellow-500 text-4xl">
                                                 <p>TranID:</p>
