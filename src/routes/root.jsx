@@ -149,7 +149,13 @@ const Root = () => {
     // 一次刪除多筆資料
     const handleCheckboxChange = (tranID) => {
         //把勾選的交易加入陣列
-        setSelectedTransactions([...selectedTransactions, tranID]);
+        if (selectedTransactions.includes(tranID)) {
+            // 如果交易ID已有勾選，就取消勾選
+            setSelectedTransactions(selectedTransactions.filter(id => id !== tranID));
+        } else {
+            // 勾選的交易放入列
+            setSelectedTransactions([...selectedTransactions, tranID]);
+        }
     };
     // 刪除勾選的交易
     const handleDeleteSelected = () => {
@@ -312,7 +318,6 @@ const Root = () => {
                                         onChange={() => handleCheckboxChange(transaction.TranID)}
                                     />
                                 </td>
-                                {/*<td className="py-2 px-4 border text-center"><input type="checkbox" className="transform scale-150"/></td>*/}
                                 <td className="border-b px-4 py-2">{transaction.AccID}</td>
                                 <td className="border-b px-4 py-2">{transaction.TranID}</td>
                                 <td className="border-b px-4 py-2">{transaction.TranTime}</td>
