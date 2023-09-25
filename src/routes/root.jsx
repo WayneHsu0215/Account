@@ -36,6 +36,10 @@ const Root = () => {
         return maxTransID + 1; // 返回下一个可用的TransID
     };
 
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const openAddModal = () => {
+        setIsAddModalOpen(true);
+    };
 
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -74,6 +78,7 @@ const Root = () => {
 
             // 刷新交易列表
             fetchTransData();
+            setIsAddModalOpen(false);
         } catch (error) {
             console.error('Error adding new transaction:', error);
         }
@@ -147,6 +152,7 @@ const Root = () => {
             })
             .then((data) => {
                 setSearchTrans(data);
+                setSearchTranID('');
             })
             .catch((error) => {
                 console.error('Error searching transaction:', error);
@@ -159,12 +165,13 @@ const Root = () => {
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
             <h1 className="text-3xl font-semibold mb-4 m-8">Transaction List</h1>
             {/*新增表單*/}
-            <form onSubmit={handleSubmit} className="w-full flex  justify-between">
+            <Modal isOpen={isAddModalOpen}  onClose={() => setIsAddModalOpen(false)}>
+            <form onSubmit={handleSubmit} className="w-full justify-between">
                 <input
                     type="text"
                     name="AccID"
                     placeholder="AccID"
-                    value={newTransaction.AccID}
+                    //value={newTransaction.AccID}
                     onChange={handleInputChange}
                     className="border border-black  w-1/6 m-2 rounded-lg text-center"
                 />
@@ -172,7 +179,7 @@ const Root = () => {
                     type="text"
                     name="AtmID"
                     placeholder="AtmID"
-                    value={newTransaction.AtmID}
+                    //value={newTransaction.AtmID}
                     onChange={handleInputChange}
                     className="border border-black  w-1/6 m-2 rounded-lg text-center"
                 />
@@ -180,7 +187,7 @@ const Root = () => {
                     type="text"
                     name="TranType"
                     placeholder="TranType"
-                    value={newTransaction.TranType}
+                    //value={newTransaction.TranType}
                     onChange={handleInputChange}
                     className="border border-black  w-1/6 m-2 rounded-lg text-center"
                 />
@@ -188,7 +195,7 @@ const Root = () => {
                     type="text"
                     name="TranNote"
                     placeholder="TranNote"
-                    value={newTransaction.TranNote}
+                    //value={newTransaction.TranNote}
                     onChange={handleInputChange}
                     className="border border-black  w-1/6 m-2 rounded-lg text-center"
                 />
@@ -196,19 +203,18 @@ const Root = () => {
                     type="text"
                     name="UP_USR"
                     placeholder="UP_USR"
-                    value={newTransaction.UP_USR}
+                    //value={newTransaction.UP_USR}
                     onChange={handleInputChange}
                     className="border border-black  w-1/6 m-2 rounded-lg text-center"
                 />
-
-                {/* 在这里添加其他输入字段 */}
                 <button type="submit"
                         className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-1/6 m-1 rounded-lg">新增
                 </button>
-            </form>
+            </form></Modal>
+
 
             {/*查詢框框 + 按鈕*/}
-            <div className="flex flex-col md:flex-row justify-center items-center">
+            <div className="flex flex-col md:flex-row justify-center items-center bg-slate-50 rounded-lg">
                 <input
                     className="border  text-center m-2  rounded-lg  border-black "
                     type="text"
@@ -227,23 +233,32 @@ const Root = () => {
             </div>
 
             {/*交易列表*/}
-            <div className="h-screen w-full overflow-y-scroll mt-4 ">
+            <div className="h-screen w-full overflow-y-scroll mt-4 bg-slate-50 rounded-lg">
+                {/*<button type="submit"*/}
+                {/*        className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start">刪除*/}
+                {/*</button>*/}
+                <button type="submit"
+                        className="bg-green-300 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg" onClick={() => openAddModal()}>新增
+                </button>
                 <table className="min-w-full border-2 ">
                     <thead>
                     <tr>
-                        <th className="px-6 py-2 bg-green-500">AccID</th>
-                        <th className="px-3 py-2 bg-green-500">TranID</th>
-                        <th className="px-8 py-2 bg-green-500">TranTime</th>
-                        <th className="px-6 py-2 bg-green-500">AtmID</th>
-                        <th className="px-6 py-2 bg-green-500">TranType</th>
-                        <th className="px-12 py-2 bg-green-500">TranNote</th>
-                        <th className="px-6 py-2 bg-green-500">UP_DATETIME</th>
-                        <th className="px-6 py-2 bg-green-500">UP_USR</th>
+                        {/*{searchTrans ? (null) : (*/}
+                        {/*        <th className="px-6 py-2 border">Check</th>*/}
+                        {/*)}*/}
+                        <th className="px-6 py-2 border">AccID</th>
+                        <th className="px-3 py-2 border">TranID</th>
+                        <th className="px-8 py-2 border">TranTime</th>
+                        <th className="px-6 py-2 border">AtmID</th>
+                        <th className="px-6 py-2 border">TranType</th>
+                        <th className="px-12 py-2 border">TranNote</th>
+                        <th className="px-6 py-2 border">UP_DATETIME</th>
+                        <th className="px-6 py-2 border">UP_USR</th>
                         {/*如果全部顯示就出現按鈕*/}
                         {searchTrans ? (null) : (
                             <>
-                                <th className="px-4 py-2 bg-green-500">DELETE</th>
-                                <th className="px-4 py-2 bg-green-500">EDIT</th>
+                                <th className="px-4 py-2 border">DELETE</th>
+                                <th className="px-4 py-2 border">EDIT</th>
                             </>
                         )}
                     </tr>
@@ -251,6 +266,7 @@ const Root = () => {
                     <tbody>
                     {searchTrans ? ( // 如果有查詢結果
                         <tr>
+
                             <td className="py-2 px-4 border">{searchTrans.AccID}</td>
                             <td className="py-2 px-4 border">{searchTrans.TranID}</td>
                             <td className="py-2 px-4 border">{searchTrans.TranTime}</td>
@@ -263,6 +279,7 @@ const Root = () => {
                     ) : (
                         transactions.map((transaction) => (
                             <tr key={transaction.AccID}>
+                                {/*<td className="py-2 px-4 border text-center"><input type="checkbox" className="transform scale-150"/></td>*/}
                                 <td className="border px-4 py-2">{transaction.AccID}</td>
                                 <td className="border px-4 py-2">{transaction.TranID}</td>
                                 <td className="border px-4 py-2">{transaction.TranTime}</td>
