@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './routes/root';
+//import Root from './routes/acc.jsx';
 import './index.css';
 
 ReactDOM.render(

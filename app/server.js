@@ -1,6 +1,7 @@
 import express from 'express';
 import sql from 'mssql';
 import controllers from '../controllers/index.js';
+//import controllers from '../controllers/accIndex.js';
 import viteExpress from 'vite-express';
 import session from 'express-session';
 
@@ -33,6 +34,7 @@ const config = {
     }
 };
 
+
 // 連接資料庫
 sql.connect(config).then(pool => {
     console.log('Connected to the database.');
@@ -42,7 +44,6 @@ sql.connect(config).then(pool => {
 
     // 使用你的控制器
     app.use('/api', controllers);
-
     const server = app.listen(3251, () => {
         console.log('Server is running on port 3251');
     });
