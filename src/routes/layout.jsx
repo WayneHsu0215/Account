@@ -11,17 +11,23 @@ const Layout = ({ children }) => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    const [activeLink, setActiveLink] = useState(0); // 用於跟蹤當前活動的鏈接狀態
+    const handleLinkClick = (index) => {
+        setActiveLink(index);
+    };
+
+
     return (
         <div className={`flex h-screen ${isSidebarOpen ? 'overflow-hidden' : ''}`}>
             {/* 側邊欄 */}
             <aside className={`bg-stone-200 w-64 min-h-screen p-4 ${isSidebarOpen ? 'block' : 'hidden'}`}>
                 {/* 在這裡添加側邊欄的內容 */}
-                <ul className="mt-4">
-                    <li className="text-center">
-                        <Link to="/">交易紀錄</Link>
+                <ul className="mt-8">
+                    <li className={`text-center ${activeLink === 0 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
+                        <Link to="/" onClick={() => handleLinkClick(0)}>交易紀錄</Link>
                     </li>
-                    <li className="text-center mt-2">
-                        <Link to="/acc">帳號設置</Link>
+                    <li className={`text-center mt-4 ${activeLink === 1 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
+                        <Link to="/acc" onClick={() => handleLinkClick(1)}>帳號設置</Link>
                     </li>
                 </ul>
             </aside>
