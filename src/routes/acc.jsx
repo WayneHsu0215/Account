@@ -1,7 +1,7 @@
 import  {useEffect, useState} from 'react';
 import Modal from './Modal'
 
-const Root = () => {
+const Acc = () => {
     const [Accounts, setAccounts] = useState([]);
 
     const fetchAccsData = async () => {
@@ -460,4 +460,4 @@ const Root = () => {
 };
 
 
-export default Root;
+export default Acc;

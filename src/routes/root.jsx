@@ -192,7 +192,7 @@ const Root = () => {
     return (
 
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
-            <h1 className="text-3xl font-semibold mb-4 m-8">Transaction List</h1>
+            <h1 className="text-3xl font-semibold mb-4 ">Transaction List</h1>
             {/*新增表單*/}
             <Modal isOpen={isAddModalOpen}  onClose={() => closeModal()}>
             <form onSubmit={handleSubmit} className="w-full justify-between">
@@ -259,10 +259,11 @@ const Root = () => {
                     className=" px-4 h-8 rounded-lg  text-black bg-amber-200 hover:bg-amber-400"
                     onClick={() => setSearchTrans(null)}>顯示全部
                 </button>
+
             </div>
 
             {/*交易列表*/}
-            <div className="h-screen w-full overflow-y-scroll mt-4 bg-slate-50 rounded-lg">
+            <div className="h-96 w-full overflow-y-scroll mt-4 bg-slate-50 rounded-lg sticky z-10">
                 {searchTrans ? (null) : (
                     <>
                         <button type="submit"
@@ -426,6 +427,7 @@ const Root = () => {
                 </table>
             </div>
         </div>
+
     );
 };
 
