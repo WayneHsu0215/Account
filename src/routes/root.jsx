@@ -200,7 +200,11 @@ const Root = () => {
 
     const handlePageInputChange = (e) => {
         const value = parseInt(e.target.value);
-        setCurrentPage(value);
+        if (!isNaN(value) && value > 0 && Number.isInteger(value) && value <= Math.ceil(transactions.length / transactionsPerPage)) {
+            setCurrentPage(value);
+        } else {
+            console.log("輸入正整数");
+        }
     };
 
 

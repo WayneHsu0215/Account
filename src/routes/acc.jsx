@@ -201,7 +201,11 @@ const Acc = () => {
 
     const handlePageInputChange = (e) => {
         const value = parseInt(e.target.value);
-        setCurrentPage(value);
+        if (!isNaN(value) && value > 0 && Number.isInteger(value) && value <= Math.ceil(Accounts.length / AccountsPerPage)) {
+            setCurrentPage(value);
+        } else {
+            console.log("輸入正整数");
+        }
     };
 
 
@@ -215,6 +219,9 @@ const Acc = () => {
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
+        }else if(currentPage < 1)
+        {
+            setCurrentPage(1);
         }
     };
 
