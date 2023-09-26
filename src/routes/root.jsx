@@ -189,6 +189,36 @@ const Root = () => {
             });
     };
 
+
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const transactionsPerPage = 10;
+    const indexOfLastTransaction = currentPage * transactionsPerPage;
+    const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+    const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+
+
+    const handlePageInputChange = (e) => {
+        const value = parseInt(e.target.value);
+        setCurrentPage(value);
+    };
+
+
+
+    const nextPage = () => {
+        if (currentPage < Math.ceil(transactions.length / transactionsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+
+
     return (
 
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
@@ -262,18 +292,22 @@ const Root = () => {
 
             </div>
 
-            {/*交易列表*/}
-            <div className="h-96 w-full overflow-y-scroll mt-4 bg-slate-50 rounded-lg sticky z-10">
+            {/*刪除與新增 + 按鈕*/}
+            <div className=" justify-left  bg-slate-50 rounded-lg mt-4">
                 {searchTrans ? (null) : (
                     <>
                         <button type="submit"
-                                className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start" onClick={handleDeleteSelected}>刪除
+                                className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start " onClick={handleDeleteSelected}>刪除
                         </button>
                         <button type="submit"
                                 className="bg-green-300 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg" onClick={() => openAddModal()}>新增
                         </button>
                     </>
-                )}
+                )}</div>
+
+            {/*交易列表*/}
+            <div className="h-96 w-full overflow-y-scroll  bg-slate-50 rounded-lg sticky ">
+
                 <table className="min-w-full border-2 ">
                     <thead>
                     <tr>
@@ -298,6 +332,7 @@ const Root = () => {
                     </thead>
                     <tbody>
                     {searchTrans ? ( // 如果有查詢結果
+
                         <tr>
                             <td className="py-2 px-4 border-b">{searchTrans.AccID}</td>
                             <td className="py-2 px-4 border-b">{searchTrans.TranID}</td>
@@ -309,7 +344,7 @@ const Root = () => {
                             <td className="border-b px-4 py-2">{searchTrans.UP_USR}</td>
                         </tr>
                     ) : (
-                        transactions.map((transaction) => (
+                        currentTransactions.map((transaction) => (
                             <tr key={transaction.TranID}>
                                 <td className="py-2 px-4 border-b text-center">
                                     <input
@@ -425,6 +460,23 @@ const Root = () => {
                         )))}
                     </tbody>
                 </table>
+            </div>
+            {/*分頁*/}
+            <div className="flex justify-end  mr-10 mt-4 ">
+                <button onClick={prevPage} disabled={currentPage === 1} className="mr-4">
+                    上一頁
+                </button>
+
+                <input
+                    type="number"
+                    value={currentPage}
+                    onChange={(e) => handlePageInputChange(e)}
+                    className="border border-black text-center w-14 rounded-lg mr-4"
+                />
+
+                <button onClick={nextPage} disabled={currentPage === Math.ceil(transactions.length / transactionsPerPage)}>
+                    下一頁
+                </button>
             </div>
         </div>
 

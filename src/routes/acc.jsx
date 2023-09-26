@@ -191,9 +191,37 @@ const Acc = () => {
 
     };
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const AccountsPerPage = 10;
+    const indexOfLastTransaction = currentPage * AccountsPerPage;
+    const indexOfFirstTransaction = indexOfLastTransaction - AccountsPerPage;
+    const currentAccounts = Accounts.slice(indexOfFirstTransaction, indexOfLastTransaction);
+
+
+    const handlePageInputChange = (e) => {
+        const value = parseInt(e.target.value);
+        setCurrentPage(value);
+    };
+
+
+
+    const nextPage = () => {
+        if (currentPage < Math.ceil(Accounts.length / AccountsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+
     return (
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
-            <h1 className="text-3xl font-semibold mb-4 m-8">Account List</h1>
+            <h1 className="text-3xl font-semibold mb-4 m-4">Account List</h1>
             {/*新增表單*/}
             <Modal isOpen={isAddModalOpen}  onClose={() => closeModal()}>
             <form onSubmit={handleSubmit} className="w-full flex  justify-between">
@@ -279,18 +307,22 @@ const Acc = () => {
                 </button>
             </div>
 
-            {/*交易列表*/}
-            <div className="h-screen w-full overflow-y-scroll mt-4 bg-slate-50 rounded-lg">
+            {/*刪除與新增 + 按鈕*/}
+            <div className=" justify-left  bg-slate-50 rounded-lg mt-4">
                 {searchAccs ? (null) : (
                     <>
                         <button type="submit"
-                                className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start" onClick={handleDeleteSelected}>刪除
+                                className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start " onClick={handleDeleteSelected}>刪除
                         </button>
                         <button type="submit"
                                 className="bg-green-300 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg" onClick={() => openAddModal()}>新增
                         </button>
                     </>
-                )}
+                )}</div>
+
+            {/*交易列表*/}
+            <div className="h-96 w-full overflow-y-scroll  bg-slate-50 rounded-lg">
+
                 <table className="min-w-full border-2 ">
                     <thead>
                     <tr>
@@ -327,7 +359,7 @@ const Acc = () => {
                             <td className="border-b px-4 py-2">{searchAccs.UP_User}</td>
                         </tr>
                     ) : (
-                        Accounts.map((account) => (
+                        currentAccounts.map((account) => (
                             <tr key={account.ID}>
                                 <td className="py-2 px-4 border-b text-center">
                                     <input
@@ -454,6 +486,23 @@ const Acc = () => {
                         )))}
                     </tbody>
                 </table>
+            </div>
+            {/*分頁*/}
+            <div className="flex justify-end  mr-10 mt-4 ">
+                <button onClick={prevPage} disabled={currentPage === 1} className="mr-4">
+                    上一頁
+                </button>
+
+                <input
+                    type="number"
+                    value={currentPage}
+                    onChange={(e) => handlePageInputChange(e)}
+                    className="border border-black text-center w-14 rounded-lg mr-4"
+                />
+
+                <button onClick={nextPage} disabled={currentPage === Math.ceil(Accounts.length / AccountsPerPage)}>
+                    下一頁
+                </button>
             </div>
         </div>
     );
