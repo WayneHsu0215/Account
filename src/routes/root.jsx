@@ -214,6 +214,9 @@ const Root = () => {
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
+        }else if(currentPage < 1)
+        {
+            setCurrentPage(1);
         }
     };
 

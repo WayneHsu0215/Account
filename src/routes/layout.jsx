@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
     return (
         <div className={`flex h-screen ${isSidebarOpen ? 'overflow-hidden' : ''}`}>
             {/* 側邊欄 */}
-            <aside className={`bg-gray-200 w-64 min-h-screen p-4 ${isSidebarOpen ? 'block' : 'hidden'}`}>
+            <aside className={`bg-stone-200 w-64 min-h-screen p-4 ${isSidebarOpen ? 'block' : 'hidden'}`}>
                 {/* 在這裡添加側邊欄的內容 */}
                 <ul className="mt-4">
                     <li className="text-center">
