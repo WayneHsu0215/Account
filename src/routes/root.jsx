@@ -199,13 +199,18 @@ const Root = () => {
 
 
     const handlePageInputChange = (e) => {
-        const value = parseInt(e.target.value);
-        if (!isNaN(value) && value > 0 && Number.isInteger(value) && value <= Math.ceil(transactions.length / transactionsPerPage)) {
-            setCurrentPage(value);
+        const value = e.target.value;
+        const maxPage = Math.ceil(transactions.length / transactionsPerPage);
+        if (value === "" || (Number(value) > 0 && !isNaN(value) && value <= maxPage)) {
+            setCurrentPage(value === "" ? "" : parseInt(value));
         } else {
-            console.log("輸入正整数");
+            // 如果输入无效、为负数或大于最大页数，将当前页设置为1
+            setCurrentPage(1);
         }
     };
+
+
+
 
 
 
