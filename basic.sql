@@ -55,15 +55,15 @@ CREATE TABLE Account
     Balance int,
     BranchID int,
     AccType varchar(3),
-    UP_Date datetime,
+    UP_Date datetime DEFAULT GETDATE(),
     UP_User varchar(20)
 );
 -- 插入测试数据（只有帐号 "admin" 的记录）
-DECLARE @CURRENT_TS datetimeoffset = GETDATE();
+
 INSERT INTO ACCOUNT
-(ID, AccID, Password, Balance, BranchID, AccType, UP_Date, UP_User)
+(ID, AccID, Password, Balance, BranchID, AccType, UP_User)
 VALUES
-    (1, 'admin', 'admin', 5000, 10, 'B01', @CURRENT_TS, '0');
+    (1, 'admin', 'admin', 5000, 10, 'B01', '0');
 GO
 
 select * from Account
