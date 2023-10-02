@@ -44,36 +44,64 @@ router.post('/trans', async (req, res) => {
     }
 });
 
-router.get('/trans/:TranID', async (req, res) => {
+router.get('/trans', async (req, res) => {
     try {
+        // 假設連接池在 app.locals.pool 中可用
         const pool = req.app.locals.pool;
-        const transId = req.params.TranID; // 从URL参数中获取TransID
 
-        // 执行查询，使用参数化查询以避免SQL注入
-        const query = `
-            SELECT AccID, TranID, CONVERT(varchar, TranTime, 23) AS TranTime, AtmID, TranType, TranNote, CONVERT(varchar, UP_DATETIME, 23) AS UP_DATETIME, UP_USR
-            FROM Trans
-            WHERE TranID = @TranID;
-        `;
+        // 執行查詢
+        const result = await pool.request().query('SELECT AccID, TranID, CONVERT(varchar, TranTime, 23) AS TranTime, AtmID, TranType, TranNote, CONVERT(varchar, UP_DATETIME, 23) AS UP_DATETIME, UP_USR\n' +
+            'FROM Trans;');
 
-        const result = await pool
-            .request()
-            .input('TranID', transId) // 使用输入参数传递TransID
-            .query(query);
+        // 在控制台中打印結果
+        console.log(result);
 
-        if (result.recordset.length === 0) {
-            // 如果找不到匹配的记录，返回404
-            res.status(404).json({ message: 'TransID not found' });
-        } else {
-            // 找到匹配的记录，将结果发送到客户端
-            res.json(result.recordset[0]);
-        }
+        // 也可以將結果發送到客戶端
+        res.json(result.recordset);
     } catch (err) {
         console.error('Error querying Trans table', err);
         res.status(500).send('Internal Server Error');
     }
 });
 
+router.get('/list', async (req, res) => {
+    try {
+        // 假設連接池在 app.locals.pool 中可用
+        const pool = req.app.locals.pool;
+
+        // 获取查询字符串参数
+        const { AccID, TranType } = req.query;
+
+        // 构建 SQL 查询字符串
+        let queryString = 'SELECT AccID, TranID, CONVERT(varchar, TranTime, 23) AS TranTime, AtmID, TranType, TranNote, CONVERT(varchar, UP_DATETIME, 23) AS UP_DATETIME, UP_USR FROM Trans';
+
+        // 构建查询条件
+        const conditions = [];
+        if (AccID) {
+            conditions.push(`AccID = '${AccID}'`);
+        }
+        if (TranType) {
+            conditions.push(`TranType = '${TranType}'`);
+        }
+
+        // 如果有条件，将它们添加到查询中
+        if (conditions.length > 0) {
+            queryString += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        // 执行查询
+        const result = await pool.request().query(queryString);
+
+        // 在控制台中打印结果
+        console.log(result);
+
+        // 也可以将结果发送到客户端
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error querying Trans table', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 router.delete('/trans/:TranID', async (req, res) => {
     try {
