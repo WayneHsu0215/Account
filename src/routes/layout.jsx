@@ -24,7 +24,7 @@ const Layout = ({ children }) => {
                 {/* 在這裡添加側邊欄的內容 */}
                 <ul className="mt-8">
                     <li className={`text-center ${activeLink === 0 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
-                        <Link to="/" onClick={() => handleLinkClick(0)}>交易紀錄</Link>
+                        <Link to="/" onClick={() => handleLinkClick(0)}>病患名單</Link>
                     </li>
                     <li className={`text-center mt-4 ${activeLink === 1 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
                         <Link to="/acc" onClick={() => handleLinkClick(1)}>帳號設置</Link>

@@ -105,6 +105,41 @@ CREATE TABLE LOG_SEQ(
 )
     GO
 
+-- 新增patient資料Table: Patient
+CREATE TABLE Patient
+(
+    ID varchar(10) PRIMARY KEY,
+    PName varchar(20),
+    PGender char(1),
+    PBirth date,
+    PAge int,
+    ExamineID varchar(20),
+    Examine varchar(50),
+    PPay varchar(20),
+    Diagnosis varchar(20),
+    DName varchar(20),
+    type varchar(20)
+)
+GO
+
+-- 插入第1笔患者数据
+INSERT INTO Patient (ID, PName, PGender, PBirth, PAge, ExamineID, Examine, PPay, Diagnosis, DName, type)
+VALUES ('A123456789', 'John Doe', 'M', '1990-01-15', DATEDIFF(YEAR, '1990-01-15', GETDATE()), 'E001', 'Routine Checkup', 'Cash', 'Healthy', 'Dr. Smith', 'General'),
+       ('B123456789', 'Jane Smith', 'F', '1985-05-20', DATEDIFF(YEAR, '1985-05-20', GETDATE()), 'E002', 'Blood Test', 'Insurance', 'Anemia', 'Dr. Johnson', 'Specialist'),
+       ('C123456789', 'Mike Johnson', 'M', '1988-11-10', DATEDIFF(YEAR, '1988-11-10', GETDATE()), 'E003', 'X-ray', 'Credit Card', 'Fracture', 'Dr. Brown', 'General'),
+       ('D123456789', 'Emily Davis', 'F', '1995-08-03', DATEDIFF(YEAR, '1995-08-03', GETDATE()), 'E004', 'Ultrasound', 'Cash', 'Pregnant', 'Dr. White', 'Obstetrics'),
+       ('E123456789', 'David Wilson', 'M', '1982-04-25', DATEDIFF(YEAR, '1982-04-25', GETDATE()), 'E005', 'MRI', 'Insurance', 'Back Pain', 'Dr. Taylor', 'Specialist'),
+       ('F123456789', 'Linda Lee', 'F', '1998-12-15', DATEDIFF(YEAR, '1998-12-15', GETDATE()), 'E006', 'Physical Exam', 'Cash', 'General Checkup', 'Dr. Smith', 'General'),
+       ('G123456789', 'Robert Brown', 'M', '1991-06-30', DATEDIFF(YEAR, '1991-06-30', GETDATE()), 'E007', 'CT Scan', 'Credit Card', 'Headache', 'Dr. Johnson', 'Specialist'),
+       ('H123456789', 'Susan Miller', 'F', '1980-09-18', DATEDIFF(YEAR, '1980-09-18', GETDATE()), 'E008', 'EKG', 'Insurance', 'Heart Condition', 'Dr. White', 'Cardiology'),
+       ('I123456789', 'James Clark', 'M', '1987-03-08', DATEDIFF(YEAR, '1987-03-08', GETDATE()), 'E009', 'Blood Pressure Check', 'Cash', 'Hypertension', 'Dr. Brown', 'General'),
+       ('J123456789', 'Karen Anderson', 'F', '1993-07-12', DATEDIFF(YEAR, '1993-07-12', GETDATE()), 'E010', 'Dental Checkup', 'Credit Card', 'Toothache', 'Dr. Taylor', 'Dentistry'),
+       ('K123456789', 'Anderson', 'F', '1993-07-12', DATEDIFF(YEAR, '1993-07-12', GETDATE()), 'E010', 'Dental Checkup', 'Credit Card', 'Toothache', 'Dr. Taylor', 'Dentistry');
+GO
+
+
+SELECT * FROM Patient
+
 SELECT * FROM LOG_SEQ
 SELECT * FROM Customer
 SELECT * FROM Account

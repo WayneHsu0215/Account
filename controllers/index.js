@@ -44,25 +44,6 @@ router.post('/trans', async (req, res) => {
     }
 });
 
-router.get('/trans', async (req, res) => {
-    try {
-        // 假設連接池在 app.locals.pool 中可用
-        const pool = req.app.locals.pool;
-
-        // 執行查詢
-        const result = await pool.request().query('SELECT AccID, TranID, CONVERT(varchar, TranTime, 23) AS TranTime, AtmID, TranType, TranNote, CONVERT(varchar, UP_DATETIME, 23) AS UP_DATETIME, UP_USR\n' +
-            'FROM Trans;');
-
-        // 在控制台中打印結果
-        console.log(result);
-
-        // 也可以將結果發送到客戶端
-        res.json(result.recordset);
-    } catch (err) {
-        console.error('Error querying Trans table', err);
-        res.status(500).send('Internal Server Error');
-    }
-});
 
 router.get('/list', async (req, res) => {
     try {
@@ -277,5 +258,118 @@ router.put('/accounts/:ID', async (req, res) => {
 
 
 
+
+
+
+router.get('/list', async (req, res) => {
+    try {
+        // 假設連接池在 app.locals.pool 中可用
+        const pool = req.app.locals.pool;
+
+        // 获取查询字符串参数
+        const { AccID, TranType } = req.query;
+
+        // 构建 SQL 查询字符串
+        let queryString = 'SELECT AccID, TranID, CONVERT(varchar, TranTime, 23) AS TranTime, AtmID, TranType, TranNote, CONVERT(varchar, UP_DATETIME, 23) AS UP_DATETIME, UP_USR FROM Trans';
+
+        // 构建查询条件
+        const conditions = [];
+        if (AccID) {
+            conditions.push(`AccID = '${AccID}'`);
+        }
+        if (TranType) {
+            conditions.push(`TranType = '${TranType}'`);
+        }
+
+        // 如果有条件，将它们添加到查询中
+        if (conditions.length > 0) {
+            queryString += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        // 执行查询
+        const result = await pool.request().query(queryString);
+
+        // 在控制台中打印结果
+        console.log(result);
+
+        // 也可以将结果发送到客户端
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error querying Trans table', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+router.get('/patient', async (req, res) => {
+    try {
+        // 假設連接池在 app.locals.pool 中可用
+        const pool = req.app.locals.pool;
+
+        // 執行查詢
+        const result = await pool.request().query('SELECT ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, ExamineID, Examine, PPay, Diagnosis, DName, type\n' +
+            'FROM Patient;');
+        // 在控制台中打印結果
+        console.log(result);
+
+        // 也可以將結果發送到客戶端
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error querying Trans table', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/patientsearch', async (req, res) => {
+    try {
+        // 假設連接池在 app.locals.pool 中可用
+        const pool = req.app.locals.pool;
+
+        // 获取查询字符串参数
+        const { ID, PName , ExamineID, Examine, Diagnosis, DName} = req.query;
+
+        // 构建 SQL 查询字符串
+        let queryString = 'SELECT ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, ExamineID, Examine, PPay, Diagnosis, DName, type\n' +
+            'FROM Patient';
+
+        // 构建查询条件
+        const conditions = [];
+        if (ID) {
+            conditions.push(`ID = '${ID}'`);
+        }
+        if (PName) {
+            conditions.push(`PName = '${PName}'`);
+        }
+        if (ExamineID) {
+            conditions.push(`ExamineID = '${ExamineID}'`);
+        }
+        if (Examine) {
+            conditions.push(`Examine = '${Examine}'`);
+        }
+        if (Diagnosis) {
+            conditions.push(`Diagnosis = '${Diagnosis}'`);
+        }
+        if (DName) {
+            conditions.push(`DName = '${DName}'`);
+        }
+
+        // 如果有条件，将它们添加到查询中
+        if (conditions.length > 0) {
+            queryString += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        // 执行查询
+        const result = await pool.request().query(queryString);
+
+        // 在控制台中打印结果
+        console.log(result);
+
+        // 也可以将结果发送到客户端
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error querying patient table', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 export default router;
