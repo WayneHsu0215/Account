@@ -108,6 +108,7 @@ CREATE TABLE LOG_SEQ(
 -- 新增patient資料Table: Patient
 CREATE TABLE Patient
 (
+    NID int IDENTITY(1,1) PRIMARY KEY,
     ID varchar(10) ,
     PName varchar(20),
     PGender char(1),

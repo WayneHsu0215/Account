@@ -189,24 +189,26 @@ const Root = () => {
                 <table className="min-w-full border-2">
                     <thead>
                     <tr>
-                        <th className="px-4 py-2">身分證字號</th>
-                        <th className="px-4 py-2">姓名</th>
+                        <th className="px-2 py-2 ">編號</th>
+                        <th className="px-4 py-2 ">身分證字號</th>
+                        <th className="px-4 py-2 ">姓名</th>
                         <th className="px-4 py-2 w-16">性別</th>
-                        <th className="px-4 py-2 w-24">出生日期</th>
+                        <th className="px-4 py-2 ">出生日期</th>
                         <th className="px-4 py-2 w-16">年齡</th>
-                        <th className="px-4 py-2 w-24">檢查日期</th>
-                        <th className="px-4 py-2 w-24">檢查代碼</th>
-                        <th className="px-4 py-2">檢查名稱</th>
-                        <th className="px-4 py-2">費別</th>
-                        <th className="px-4 py-2">診斷</th>
-                        <th className="px-4 py-2">檢查醫生</th>
-                        <th className="px-4 py-2">診別</th>
+                        <th className="px-4 py-2 ">檢查日期</th>
+                        <th className="px-4 py-2 w-32">檢查代碼</th>
+                        <th className="px-4 py-2 ">檢查名稱</th>
+                        <th className="px-4 py-2 ">費別</th>
+                        <th className="px-4 py-2 ">診斷</th>
+                        <th className="px-4 py-2 w-28">檢查醫生</th>
+                        <th className="px-4 py-2 ">診別</th>
                     </tr>
                     </thead>
                     <tbody>
                     {searchResults.length > 0 ? (
                         searchResults.map((result) => (
-                            <tr key={result.ID}>
+                            <tr key={result.NID}>
+                                <td className="border px-4 py-2">{result.NID}</td>
                                 <td className="border px-4 py-2">{result.ID}</td>
                                 <td className="border px-4 py-2">{result.PName}</td>
                                 <td className="border px-4 py-2">{result.PGender}</td>
@@ -223,7 +225,8 @@ const Root = () => {
                         ))
                     ) : (
                         currentpatient.map((patient) => (
-                            <tr key={patient.ID}>
+                            <tr key={patient.NID}>
+                                <td className="border px-4 py-2">{patient.NID}</td>
                                 <td className="border px-4 py-2">{patient.ID}</td>
                                 <td className="border px-4 py-2">{patient.PName}</td>
                                 <td className="border px-4 py-2">{patient.PGender}</td>

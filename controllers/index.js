@@ -307,7 +307,7 @@ router.get('/patient', async (req, res) => {
         const pool = req.app.locals.pool;
 
         // 執行查詢
-        const result = await pool.request().query('SELECT ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, CONVERT(varchar, Examinedate, 23) AS Examinedate, ExamineID, Examine, PPay, Diagnosis, DName, type FROM Patient');
+        const result = await pool.request().query('SELECT NID,ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, CONVERT(varchar, Examinedate, 23) AS Examinedate, ExamineID, Examine, PPay, Diagnosis, DName, type FROM Patient');
         // 在控制台中打印結果
         console.log(result);
 
@@ -328,7 +328,7 @@ router.get('/patientsearch', async (req, res) => {
         const { ID, PName , ExamineID, Examine, Diagnosis, DName} = req.query;
 
         // 构建 SQL 查询字符串
-        let queryString = 'SELECT ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, CONVERT(varchar, Examinedate, 23) AS Examinedate,ExamineID, Examine, PPay, Diagnosis, DName, type\n' +
+        let queryString = 'SELECT NID,ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, CONVERT(varchar, Examinedate, 23) AS Examinedate,ExamineID, Examine, PPay, Diagnosis, DName, type\n' +
             'FROM Patient';
 
         // 构建查询条件
