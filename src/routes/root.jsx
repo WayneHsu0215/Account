@@ -189,17 +189,18 @@ const Root = () => {
                 <table className="min-w-full border-2">
                     <thead>
                     <tr>
-                        <th className="px-4 py-2">ID</th>
-                        <th className="px-4 py-2">PName</th>
-                        <th className="px-4 py-2">PGender</th>
-                        <th className="px-4 py-2">PBirth</th>
-                        <th className="px-4 py-2">PAge</th>
-                        <th className="px-4 py-2">ExamineID</th>
-                        <th className="px-4 py-2">Examine</th>
-                        <th className="px-4 py-2">PPay</th>
-                        <th className="px-4 py-2">Diagnosis</th>
-                        <th className="px-4 py-2">DName</th>
-                        <th className="px-4 py-2">type</th>
+                        <th className="px-4 py-2">身分證字號</th>
+                        <th className="px-4 py-2">姓名</th>
+                        <th className="px-4 py-2 w-16">性別</th>
+                        <th className="px-4 py-2 w-24">出生日期</th>
+                        <th className="px-4 py-2 w-16">年齡</th>
+                        <th className="px-4 py-2 w-24">檢查日期</th>
+                        <th className="px-4 py-2 w-24">檢查代碼</th>
+                        <th className="px-4 py-2">檢查名稱</th>
+                        <th className="px-4 py-2">費別</th>
+                        <th className="px-4 py-2">診斷</th>
+                        <th className="px-4 py-2">檢查醫生</th>
+                        <th className="px-4 py-2">診別</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -211,6 +212,7 @@ const Root = () => {
                                 <td className="border px-4 py-2">{result.PGender}</td>
                                 <td className="border px-4 py-2">{result.PBirth}</td>
                                 <td className="border px-4 py-2">{result.PAge}</td>
+                                <td className="border px-4 py-2">{result.Examinedate}</td>
                                 <td className="border px-4 py-2">{result.ExamineID}</td>
                                 <td className="border px-4 py-2">{result.Examine}</td>
                                 <td className="border px-4 py-2">{result.PPay}</td>
@@ -227,6 +229,7 @@ const Root = () => {
                                 <td className="border px-4 py-2">{patient.PGender}</td>
                                 <td className="border px-4 py-2">{patient.PBirth}</td>
                                 <td className="border px-4 py-2">{patient.PAge}</td>
+                                <td className="border px-4 py-2">{patient.Examinedate}</td>
                                 <td className="border px-4 py-2">{patient.ExamineID}</td>
                                 <td className="border px-4 py-2">{patient.Examine}</td>
                                 <td className="border px-4 py-2">{patient.PPay}</td>
