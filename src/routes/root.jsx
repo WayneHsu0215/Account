@@ -129,42 +129,42 @@ const Root = () => {
                 <input
                     className="border text-center m-2 rounded-lg border-black"
                     type="text"
-                    placeholder="ID"
+                    placeholder="身分證字號"
                     value={searchParams.ID}
                     onChange={(e) => setSearchParams({ ...searchParams, ID: e.target.value })}
                 />
                 <input
                     className="border text-center m-2 rounded-lg border-black"
                     type="text"
-                    placeholder="PName"
+                    placeholder="姓名"
                     value={searchParams.PName}
                     onChange={(e) => setSearchParams({ ...searchParams, PName: e.target.value })}
                 />
                 <input
                     className="border text-center m-2 rounded-lg border-black"
                     type="text"
-                    placeholder="ExamineID"
+                    placeholder="檢查代碼"
                     value={searchParams.ExamineID}
                     onChange={(e) => setSearchParams({ ...searchParams, ExamineID: e.target.value })}
                 />
                 <input
                     className="border text-center m-2 rounded-lg border-black"
                     type="text"
-                    placeholder="Examine"
+                    placeholder="檢查名稱"
                     value={searchParams.Examine}
                     onChange={(e) => setSearchParams({ ...searchParams, Examine: e.target.value })}
                 />
                 <input
                     className="border text-center m-2 rounded-lg border-black"
                     type="text"
-                    placeholder="Diagnosis"
+                    placeholder="診斷"
                     value={searchParams.Diagnosis}
                     onChange={(e) => setSearchParams({ ...searchParams, Diagnosis: e.target.value })}
                 />
                 <input
                     className="border text-center m-2 rounded-lg border-black"
                     type="text"
-                    placeholder="DName"
+                    placeholder="檢查醫生"
                     value={searchParams.DName}
                     onChange={(e) => setSearchParams({ ...searchParams, DName: e.target.value })}
                 />
