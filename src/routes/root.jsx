@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Root = () => {
     const [patient, setPatient] = useState([]);
@@ -31,11 +33,17 @@ const Root = () => {
         fetchPatientData();
     }, []);
 
+
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
+
 // Inside your Root component
     const searchPatient = async () => {
         const { ID, PName, ExamineID, Examine, Diagnosis, DName } = searchParams;
 
-        if (!ID && !PName && !ExamineID && !Examine && !Diagnosis && !DName) {
+        if (!ID && !PName && !ExamineID && !Examine && !Diagnosis && !DName && !startDate && !endDate) {
             return; // No search parameters provided
         }
 
@@ -47,6 +55,8 @@ const Root = () => {
                 Examine,
                 Diagnosis,
                 DName,
+                startDate: startDate ? startDate.toISOString().split('T')[0] : '',
+                endDate: endDate ? endDate.toISOString().split('T')[0] : '',
             }).toString();
 
             const response = await fetch(`/api/patientsearch?${queryParams}`);
@@ -67,6 +77,8 @@ const Root = () => {
     };
 
 
+
+
     const showAllPatients = () => {
         setSearchParams({
             ID: '',
@@ -75,11 +87,31 @@ const Root = () => {
             Examine: '',
             Diagnosis: '',
             DName: '',
+
         });
+
+
+        setStartDate(null);
+        setEndDate(null);
+
         setSearchResults([]); // Set searchResults to an empty array
 
 
     };
+
+    const clearAllFilters = () => {
+        setSearchParams({
+            ID: '',
+            PName: '',
+            ExamineID: '',
+            Examine: '',
+            Diagnosis: '',
+            DName: '',
+        });
+        setStartDate(null);
+        setEndDate(null);
+    };
+
 
     const [currentPage, setCurrentPage] = useState(1);
     const patientPerPage = 10;
@@ -123,94 +155,163 @@ const Root = () => {
 
     return (
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 ">
-            <h1 className="text-3xl font-semibold mb-4 m-6">Patient List</h1>
+            <h1 className="text-3xl font-semibold ml-4">Patient List</h1>
+            <div className="flex justify-center items-center ">
+                <div className="p-4 border border-black border-solid rounded-lg bg-slate-100 w-2/3">
+                    <div className="flex flex-wrap gap-4">
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-24">身分證字號:</h1>
+                            <input
+                                className="border text-center rounded-lg border-black"
+                                type="text"
+                                placeholder="身分證字號"
+                                value={searchParams.ID}
+                                onChange={(e) => setSearchParams({ ...searchParams, ID: e.target.value })}
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-12">姓名:</h1>
+                            <input
+                                className="border text-center rounded-lg border-black"
+                                type="text"
+                                placeholder="姓名"
+                                value={searchParams.PName}
+                                onChange={(e) => setSearchParams({ ...searchParams, PName: e.target.value })}
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-20">檢查代碼:</h1>
+                            <input
+                                className="border text-center rounded-lg border-black "
+                                type="text"
+                                placeholder="檢查代碼"
+                                value={searchParams.ExamineID}
+                                onChange={(e) => setSearchParams({ ...searchParams, ExamineID: e.target.value })}
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-24">檢查名稱:</h1>
+                            <input
+                                className="border text-center rounded-lg border-black"
+                                type="text"
+                                placeholder="檢查名稱"
+                                value={searchParams.Examine}
+                                onChange={(e) => setSearchParams({ ...searchParams, Examine: e.target.value })}
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-12">診斷:</h1>
+                            <input
+                                className="border text-center rounded-lg border-black"
+                                type="text"
+                                placeholder="診斷"
+                                value={searchParams.Diagnosis}
+                                onChange={(e) => setSearchParams({ ...searchParams, Diagnosis: e.target.value })}
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-20">檢查醫生:</h1>
+                            <input
+                                className="border text-center rounded-lg border-black"
+                                type="text"
+                                placeholder="檢查醫生"
+                                value={searchParams.DName}
+                                onChange={(e) => setSearchParams({ ...searchParams, DName: e.target.value })}
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-28">檢查日期範圍:</h1>
+                            {/* 开始日期选择器 */}
+                            <DatePicker
+                                placeholderText="選擇日期範圍"
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                showYearDropdown // 启用年份下拉菜单
+                                yearDropdownItemNumber={10}
+                                showMonthDropdown
+                                calendarIcon={<i className="fa fa-calendar" />}
+                                clearIcon={<i className="fa fa-times" />}
+                                maxDate={new Date()}
+                                className="border text-center rounded-lg border-black w-32"
+                            />
+                        </div>
+                        <div className="flex-1 flex items-center">
+                            <h1 className="text-l font-semibold w-8">~</h1>
+                            {/* 结束日期选择器 */}
+                            <DatePicker
+                                placeholderText="選擇日期範圍"
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                showYearDropdown // 启用年份下拉菜单
+                                yearDropdownItemNumber={10}
+                                showMonthDropdown
+                                calendarIcon={<i className="fa fa-calendar" />}
+                                clearIcon={<i className="fa fa-times" />}
+                                maxDate={new Date()}
+                                className="border text-center rounded-lg border-black w-32"
+                            />
+                        </div>
+                        <div className="flex-1 flex justify-end items-center gap-4">
+                            <button
+                                className="h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400 w-20"
+                                onClick={searchPatient}
+                            >
+                                查詢
+                            </button>
+                            <button
+                                className="px-4 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400 w-24"
+                                onClick={clearAllFilters}
+                            >
+                                清空條件
+                            </button>
+                            <button
+                                className="px-4 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400 w-24"
+                                onClick={showAllPatients}
+                            >
+                                顯示全部
+                            </button>
+                        </div>
 
-            <div className="flex flex-col md:flex-row justify-center items-center">
-                <input
-                    className="border text-center m-2 rounded-lg border-black"
-                    type="text"
-                    placeholder="ID"
-                    value={searchParams.ID}
-                    onChange={(e) => setSearchParams({ ...searchParams, ID: e.target.value })}
-                />
-                <input
-                    className="border text-center m-2 rounded-lg border-black"
-                    type="text"
-                    placeholder="PName"
-                    value={searchParams.PName}
-                    onChange={(e) => setSearchParams({ ...searchParams, PName: e.target.value })}
-                />
-                <input
-                    className="border text-center m-2 rounded-lg border-black"
-                    type="text"
-                    placeholder="ExamineID"
-                    value={searchParams.ExamineID}
-                    onChange={(e) => setSearchParams({ ...searchParams, ExamineID: e.target.value })}
-                />
-                <input
-                    className="border text-center m-2 rounded-lg border-black"
-                    type="text"
-                    placeholder="Examine"
-                    value={searchParams.Examine}
-                    onChange={(e) => setSearchParams({ ...searchParams, Examine: e.target.value })}
-                />
-                <input
-                    className="border text-center m-2 rounded-lg border-black"
-                    type="text"
-                    placeholder="Diagnosis"
-                    value={searchParams.Diagnosis}
-                    onChange={(e) => setSearchParams({ ...searchParams, Diagnosis: e.target.value })}
-                />
-                <input
-                    className="border text-center m-2 rounded-lg border-black"
-                    type="text"
-                    placeholder="DName"
-                    value={searchParams.DName}
-                    onChange={(e) => setSearchParams({ ...searchParams, DName: e.target.value })}
-                />
-
+                    </div>
+                </div>
             </div>
-            <div className="flex flex-col md:flex-row justify-center items-center">
-                <button
-                    className="px-4 h-8 rounded-lg m-2 text-black bg-amber-200 hover:bg-amber-400"
-                    onClick={searchPatient}
-                >
-                    查詢
-                </button>
-                <button
-                    className="px-4 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400"
-                    onClick={showAllPatients}
-                >
-                    顯示全部
-                </button></div>
+
+
+
 
 
             <div className="h-96 overflow-y-scroll mt-4 ">
                 <table className="min-w-full border-2">
                     <thead>
                     <tr>
-                        <th className="px-4 py-2">ID</th>
-                        <th className="px-4 py-2">PName</th>
-                        <th className="px-4 py-2">PGender</th>
-                        <th className="px-4 py-2">PBirth</th>
-                        <th className="px-4 py-2">PAge</th>
-                        <th className="px-4 py-2">ExamineID</th>
-                        <th className="px-4 py-2">Examine</th>
-                        <th className="px-4 py-2">PPay</th>
-                        <th className="px-4 py-2">Diagnosis</th>
-                        <th className="px-4 py-2">DName</th>
-                        <th className="px-4 py-2">type</th>
+                        <th className="px-2 py-2 ">編號</th>
+                        <th className="px-4 py-2 ">身分證字號</th>
+                        <th className="px-4 py-2 ">姓名</th>
+                        <th className="px-4 py-2 w-16">性別</th>
+                        <th className="px-4 py-2 ">出生日期</th>
+                        <th className="px-4 py-2 w-16">年齡</th>
+                        <th className="px-4 py-2 ">檢查日期</th>
+                        <th className="px-4 py-2 w-32">檢查代碼</th>
+                        <th className="px-4 py-2 ">檢查名稱</th>
+                        <th className="px-4 py-2 ">費別</th>
+                        <th className="px-4 py-2 ">診斷</th>
+                        <th className="px-4 py-2 w-28">檢查醫生</th>
+                        <th className="px-4 py-2 ">診別</th>
                     </tr>
                     </thead>
                     <tbody>
                     {searchResults.length > 0 ? (
                         searchResults.map((result) => (
-                            <tr key={result.ID}>
+                            <tr key={result.NID}>
+                                <td className="border px-4 py-2">{result.NID}</td>
                                 <td className="border px-4 py-2">{result.ID}</td>
                                 <td className="border px-4 py-2">{result.PName}</td>
                                 <td className="border px-4 py-2">{result.PGender}</td>
                                 <td className="border px-4 py-2">{result.PBirth}</td>
                                 <td className="border px-4 py-2">{result.PAge}</td>
+                                <td className="border px-4 py-2">{result.Examinedate}</td>
                                 <td className="border px-4 py-2">{result.ExamineID}</td>
                                 <td className="border px-4 py-2">{result.Examine}</td>
                                 <td className="border px-4 py-2">{result.PPay}</td>
@@ -221,12 +322,14 @@ const Root = () => {
                         ))
                     ) : (
                         currentpatient.map((patient) => (
-                            <tr key={patient.ID}>
+                            <tr key={patient.NID}>
+                                <td className="border px-4 py-2">{patient.NID}</td>
                                 <td className="border px-4 py-2">{patient.ID}</td>
                                 <td className="border px-4 py-2">{patient.PName}</td>
                                 <td className="border px-4 py-2">{patient.PGender}</td>
                                 <td className="border px-4 py-2">{patient.PBirth}</td>
                                 <td className="border px-4 py-2">{patient.PAge}</td>
+                                <td className="border px-4 py-2">{patient.Examinedate}</td>
                                 <td className="border px-4 py-2">{patient.ExamineID}</td>
                                 <td className="border px-4 py-2">{patient.Examine}</td>
                                 <td className="border px-4 py-2">{patient.PPay}</td>
@@ -240,7 +343,7 @@ const Root = () => {
                 </table>
             </div>
             {/*分頁*/}
-            <div className="flex justify-end  mr-10 mt-4 ">
+            <div className="flex justify-end  mr-10 mt-4 h-full ">
                 <button onClick={prevPage} disabled={currentPage === 1} className="mr-4">
                     上一頁
                 </button>

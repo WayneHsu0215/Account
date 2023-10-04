@@ -106,11 +106,13 @@ CREATE TABLE LOG_SEQ(
 -- 新增patient資料Table: Patient
 CREATE TABLE Patient
 (
-    ID varchar(10) PRIMARY KEY,
+    NID int IDENTITY(1,1) PRIMARY KEY,
+    ID varchar(10) ,
     PName varchar(20),
     PGender char(1),
     PBirth date,
     PAge int,
+    Examinedate datetime DEFAULT GETDATE(),
     ExamineID varchar(20),
     Examine varchar(50),
     PPay varchar(20),
@@ -132,9 +134,11 @@ VALUES ('A123456789', 'John Doe', 'M', '1990-01-15', DATEDIFF(YEAR, '1990-01-15'
        ('H123456789', 'Susan Miller', 'F', '1980-09-18', DATEDIFF(YEAR, '1980-09-18', GETDATE()), 'E008', 'EKG', 'Insurance', 'Heart Condition', 'Dr. White', 'Cardiology'),
        ('I123456789', 'James Clark', 'M', '1987-03-08', DATEDIFF(YEAR, '1987-03-08', GETDATE()), 'E009', 'Blood Pressure Check', 'Cash', 'Hypertension', 'Dr. Brown', 'General'),
        ('J123456789', 'Karen Anderson', 'F', '1993-07-12', DATEDIFF(YEAR, '1993-07-12', GETDATE()), 'E010', 'Dental Checkup', 'Credit Card', 'Toothache', 'Dr. Taylor', 'Dentistry'),
-       ('K123456789', 'Anderson', 'F', '1993-07-12', DATEDIFF(YEAR, '1993-07-12', GETDATE()), 'E010', 'Dental Checkup', 'Credit Card', 'Toothache', 'Dr. Taylor', 'Dentistry');
+       ('K123456789', 'Anderson', 'F', '1993-07-12', DATEDIFF(YEAR, '1993-07-12', GETDATE()), 'E010', 'Dental Checkup', 'Credit Card', 'Toothache', 'Dr. Taylor', 'Dentistry'),
+       ('A123456789', 'John Doe', 'M', '1990-01-15', DATEDIFF(YEAR, '1990-01-15', GETDATE()), 'E002', 'Blood Test', 'Insurance', 'Anemia', 'Dr. Johnson', 'Specialist');
 GO
-
+INSERT INTO Patient (ID, PName, PGender, PBirth, PAge,Examinedate ,ExamineID, Examine, PPay, Diagnosis, DName, type)
+VALUES ('D123456789', 'Emily Davis', 'F', '1995-08-03', DATEDIFF(YEAR, '1990-01-15', GETDATE()),'2023-08-03' ,'E001', 'Routine Checkup', 'Cash', 'Healthy', 'Dr. Smith', 'General');
 
 SELECT * FROM Patient
 
@@ -149,3 +153,7 @@ FROM Trans;
 SELECT AccID FROM Account;
 
 SELECT AccID,Password FROM Account WHERE AccID = 'admin' AND Password = 'admin';
+
+SELECT ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, CONVERT(varchar, Examinedate, 23) AS Examinedate, ExamineID, Examine, PPay, Diagnosis, DName, type
+            FROM Patient
+
