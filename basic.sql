@@ -139,7 +139,8 @@ VALUES ('A123456789', 'John Doe', 'M', '1990-01-15', DATEDIFF(YEAR, '1990-01-15'
        ('K123456789', 'Anderson', 'F', '1993-07-12', DATEDIFF(YEAR, '1993-07-12', GETDATE()), 'E010', 'Dental Checkup', 'Credit Card', 'Toothache', 'Dr. Taylor', 'Dentistry'),
        ('A123456789', 'John Doe', 'M', '1990-01-15', DATEDIFF(YEAR, '1990-01-15', GETDATE()), 'E002', 'Blood Test', 'Insurance', 'Anemia', 'Dr. Johnson', 'Specialist');
 GO
-
+INSERT INTO Patient (ID, PName, PGender, PBirth, PAge,Examinedate ,ExamineID, Examine, PPay, Diagnosis, DName, type)
+VALUES ('D123456789', 'Emily Davis', 'F', '1995-08-03', DATEDIFF(YEAR, '1990-01-15', GETDATE()),'2023-08-03' ,'E001', 'Routine Checkup', 'Cash', 'Healthy', 'Dr. Smith', 'General');
 
 SELECT * FROM Patient
 
