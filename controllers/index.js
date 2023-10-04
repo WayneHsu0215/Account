@@ -317,7 +317,7 @@ router.get('/patientsearch', async (req, res) => {
         const pool = req.app.locals.pool;
 
         // 获取查询字符串参数
-        const { ID, PName , ExamineID, Examine, Diagnosis, DName} = req.query;
+        const { ID, PName, ExamineID, Examine, Diagnosis, DName, startDate, endDate } = req.query;
 
         // 构建 SQL 查询字符串
         let queryString = 'SELECT NID,ID, PName, PGender, CONVERT(VARCHAR(10), PBirth, 126) as PBirth, PAge, CONVERT(varchar, Examinedate, 23) AS Examinedate,ExamineID, Examine, PPay, Diagnosis, DName, type\n' +
@@ -343,6 +343,10 @@ router.get('/patientsearch', async (req, res) => {
         if (DName) {
             conditions.push(`DName = '${DName}'`);
         }
+        if (startDate && endDate) {
+            // 添加日期范围条件
+            conditions.push(`Examinedate BETWEEN '${startDate}' AND '${endDate}'`);
+        }
 
         // 如果有条件，将它们添加到查询中
         if (conditions.length > 0) {
@@ -362,6 +366,8 @@ router.get('/patientsearch', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 
 router.post('/signup', async (req, res) => {
     try {

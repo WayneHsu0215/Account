@@ -67,7 +67,7 @@ const Root = () => {
 
             if (data.length === 0) {
                 // Display a warning when search results are empty
-                window.alert('查符合和資料');
+                window.alert('未查詢符合資料');
             }
 
             setSearchResults(data);
