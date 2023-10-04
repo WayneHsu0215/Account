@@ -29,6 +29,9 @@ const Layout = ({ children }) => {
                     <li className={`text-center mt-4 ${activeLink === 1 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
                         <Link to="/acc" onClick={() => handleLinkClick(1)}>帳號設置</Link>
                     </li>
+                    <li className={`text-center mt-4 ${activeLink === 2 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
+                        <Link to="/login" onClick={() => handleLinkClick(2)}>登入畫面</Link>
+                    </li>
                 </ul>
             </aside>
 

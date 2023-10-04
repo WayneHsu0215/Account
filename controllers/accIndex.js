@@ -112,9 +112,8 @@ router.put('/accounts/:ID', async (req, res) => {
             .input('Balance', sql.Int, updatedTrans.Balance)
             .input('BranchID', sql.Int, updatedTrans.BranchID)
             .input('AccType', sql.NVarChar, updatedTrans.AccType)
-            .input('UP_Date', sql.NVarChar, updatedTrans.UP_Date)
             .input('UP_User', sql.NVarChar, updatedTrans.UP_User)
-            .query('UPDATE Account SET AccID = @AccID, Password = @Password, Balance = @Balance,BranchID = @BranchID, AccType = @AccType, UP_Date = @UP_DATETIME,UP_User = @UP_User WHERE ID = @ID');
+            .query('UPDATE Account SET AccID = @AccID, Password = @Password, Balance = @Balance,BranchID = @BranchID, AccType = @AccType, UP_Date = GETDATE(),UP_User = @UP_User WHERE ID = @ID');
 
         if (result.rowsAffected[0] === 0) {
             res.status(404).send('Account not found');

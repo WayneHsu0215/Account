@@ -1,7 +1,6 @@
 import express from 'express';
 import sql from 'mssql';
 import controllers from '../controllers/index.js';
-//import controllers from '../controllers/accIndex.js';
 import viteExpress from 'vite-express';
 import session from 'express-session';
 

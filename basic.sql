@@ -49,11 +49,9 @@ GO
 
 CREATE TABLE Account
 (
-    ID int PRIMARY KEY,
+    ID int PRIMARY KEY IDENTITY (1,1),
     AccID varchar(10) UNIQUE,
     Password varchar(100),
-    Balance int,
-    BranchID int,
     AccType varchar(3),
     UP_Date datetime DEFAULT GETDATE(),
     UP_User varchar(20)
@@ -61,9 +59,9 @@ CREATE TABLE Account
 -- 插入测试数据（只有帐号 "admin" 的记录）
 
 INSERT INTO ACCOUNT
-(ID, AccID, Password, Balance, BranchID, AccType, UP_User)
+(AccID, Password,  AccType, UP_User)
 VALUES
-    (1, 'admin', 'admin', 5000, 10, 'B01', '0');
+    ('admin', 'admin','0', '0');
 GO
 
 select * from Account
@@ -147,3 +145,7 @@ SELECT * FROM Trans
 
 SELECT AccID, TranID, CONVERT(varchar, TranTime, 23) AS TranTime, AtmID, TranType, TranNote, CONVERT(varchar, UP_DATETIME, 23) AS UP_DATETIME, UP_USR
 FROM Trans;
+
+SELECT AccID FROM Account;
+
+SELECT AccID,Password FROM Account WHERE AccID = 'admin' AND Password = 'admin';

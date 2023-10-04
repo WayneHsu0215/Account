@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './routes/root';
 import Acc from './routes/acc';
+import Login from './routes/login';
 import './index.css';
 import Layout from "./routes/layout";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
@@ -15,6 +16,7 @@ const App = () => {
 
                 <Route path="/" element={<Layout><Root /></Layout>} />
                 <Route path="/acc" element={<Layout><Acc /></Layout>} />
+                <Route path="/login" element={<Layout><Login /></Layout>} />
             </Routes>
         </BrowserRouter>
     );

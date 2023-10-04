@@ -1,5 +1,6 @@
 import { Router } from "express";
 import sql from 'mssql';
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
@@ -138,7 +139,7 @@ router.get('/accounts', async (req, res) => {
         const pool = req.app.locals.pool;
 
         // 執行查詢
-        const result = await pool.request().query('SELECT ID, AccID, Password, Balance, BranchID,AccType,CONVERT(varchar, UP_Date, 23) AS UP_Date, UP_User\n' +
+        const result = await pool.request().query('SELECT ID, AccID, Password, AccType,CONVERT(varchar, UP_Date, 23) AS UP_Date, UP_User\n' +
             'FROM Account;');
 
         // 在控制台中打印結果
@@ -162,11 +163,9 @@ router.post('/accounts', async (req, res) => {
             .input('ID', sql.Int, newAcc.ID)
             .input('AccID', sql.NVarChar, newAcc.AccID)
             .input('Password', sql.NVarChar, newAcc.Password)
-            .input('Balance', sql.Int, newAcc.Balance)
-            .input('BranchID', sql.Int, newAcc.BranchID)
             .input('AccType', sql.NVarChar, newAcc.AccType)
             .input('UP_User', sql.NVarChar, newAcc.UP_User)
-            .query('INSERT INTO Account (ID, AccID, Password, Balance, BranchID, AccType, UP_User) VALUES (@ID,  @AccID, @Password, @Balance, @BranchID, @AccType,@UP_User)');
+            .query('INSERT INTO Account (ID, AccID, Password, AccType, UP_User) VALUES (@ID,  @AccID, @Password,@AccType,@UP_User)');
 
         res.status(201).json({ message: 'Transaction added successfully' });
     } catch (err) {
@@ -182,7 +181,7 @@ router.get('/accounts/:ID', async (req, res) => {
 
         // 执行查询，使用参数化查询以避免SQL注入
         const query = `
-            SELECT ID, AccID, Password, Balance, BranchID,AccType,CONVERT(varchar, UP_Date, 23) AS UP_Date, UP_User
+            SELECT ID, AccID, Password,AccType,CONVERT(varchar, UP_Date, 23) AS UP_Date, UP_User
             FROM Account
             WHERE ID = @ID;
         `;
@@ -238,11 +237,9 @@ router.put('/accounts/:ID', async (req, res) => {
             .input('ID', sql.Int, ID)
             .input('AccID', sql.NVarChar, updatedTrans.AccID)
             .input('Password', sql.NVarChar, updatedTrans.Password)
-            .input('Balance', sql.Int, updatedTrans.Balance)
-            .input('BranchID', sql.Int, updatedTrans.BranchID)
             .input('AccType', sql.NVarChar, updatedTrans.AccType)
             .input('UP_User', sql.NVarChar, updatedTrans.UP_User)
-            .query('UPDATE Account SET AccID = @AccID, Password = @Password, Balance = @Balance,BranchID = @BranchID, AccType = @AccType, UP_Date = GETDATE(),UP_User = @UP_User WHERE ID = @ID');
+            .query('UPDATE Account SET AccID = @AccID, Password = @Password,AccType = @AccType, UP_Date = GETDATE(),UP_User = @UP_User WHERE ID = @ID');
 
         if (result.rowsAffected[0] === 0) {
             res.status(404).send('Account not found');
@@ -255,11 +252,6 @@ router.put('/accounts/:ID', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
-
-
-
 
 router.get('/list', async (req, res) => {
     try {
@@ -372,4 +364,57 @@ router.get('/patientsearch', async (req, res) => {
     }
 });
 
+router.post('/signup', async (req, res) => {
+    try {
+        const pool = req.app.locals.pool;
+        const {AccID, password, AccType, UP_User} = req.body; // 從請求主體中獲取新的交易資料
+        const hashedPassword = await bcrypt.hash(password,10);
+        console.log('AccID:',AccID);
+        console.log('PWD',password);
+        // 將新的交易資料保存到資料庫
+        const result = await pool.request()
+            .input('AccID', sql.NVarChar, AccID)
+            .input('Password', sql.NVarChar,hashedPassword)
+            .input('AccType', sql.NVarChar, AccType)
+            .input('UP_User', sql.NVarChar, UP_User)
+            .query('INSERT INTO Account (AccID, Password, AccType, UP_User) VALUES (@AccID, @Password,@AccType,@UP_User)');
+        console.log("Query Result: ", result.recordset); // 印出查詢結果，方便除錯
+        res.status(201).json({ success: true,message: 'Transaction added successfully' });
+    } catch (err) {
+        console.error('Error adding new transaction', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+router.post('/login', async (req, res) => {
+    try {
+        const { AccID,password } = req.body;
+        const pool = req.app.locals.pool;
+        // 查詢用於儲存明文密碼的字段
+        const query = `SELECT AccID, password FROM Account WHERE AccID = @username;`;
+
+        const result = await pool.request()
+            .input('username', AccID)
+            .query(query);
+
+        if (result.recordset.length > 0) {
+            if (AccID === 'admin' && password === 'admin') {
+                req.session.user = { AccID: AccID };
+                res.json({ success: true, message: 'Login successful' });
+            } else {
+                const isValid = await bcrypt.compare(password, result.recordset[0].password)
+                if (isValid) {
+                    req.session.user = {AccID: AccID};
+                    res.json({success: true, message: 'Login successful'});
+                } else {
+                    res.status(401).json({success: false, message: 'Invalid Info'});
+                }
+            }
+        } else {
+            res.status(401).json({ success: false, message: 'Invalid Info' });
+        }
+    } catch (err) {
+        console.error('Error during login:', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
 export default router;

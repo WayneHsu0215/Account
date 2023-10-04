@@ -1,6 +1,7 @@
 import  {useEffect, useState} from 'react';
 import Modal from './Modal'
-
+//先npm install --save-dev @iconify/react
+import { Icon } from '@iconify/react';
 const Acc = () => {
     const [Accounts, setAccounts] = useState([]);
 
@@ -25,8 +26,6 @@ const Acc = () => {
         ID: '',
         AccID: '',
         Password: '',
-        Balance: '',
-        BranchID: '',
         AccType: '',
         UP_User:'',
     });
@@ -82,8 +81,6 @@ const Acc = () => {
                 ID: '',
                 AccID: '',
                 Password: '',
-                Balance: '',
-                BranchID: '',
                 AccType: '',
                 UP_User:'',
             });
@@ -201,7 +198,7 @@ const Acc = () => {
 
     const handlePageInputChange = (e) => {
         const value = e.target.value;
-        const maxPage = Math.ceil(transactions.length / transactionsPerPage);
+        const maxPage = Math.ceil(Accounts.length / AccountsPerPage);
         if (value === "" || (Number(value) > 0 && !isNaN(value) && value <= maxPage)) {
             setCurrentPage(value === "" ? "" : parseInt(value));
         } else {
@@ -255,22 +252,6 @@ const Acc = () => {
                     name="Password"
                     placeholder="Password"
                     value={newAccount.Password}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-                <input
-                    type="text"
-                    name="Balance"
-                    placeholder="Balance"
-                    value={newAccount.Balance}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-                <input
-                    type="text"
-                    name="BranchID"
-                    placeholder="BranchID"
-                    value={newAccount.BranchID}
                     onChange={handleInputChange}
                     className="border border-black  w-1/6 m-2 rounded-lg text-center"
                 />
@@ -336,19 +317,16 @@ const Acc = () => {
                     <thead>
                     <tr>
                         {searchAccs ? (null) : (
-                            <th className="px-6 py-2 border-b">Check</th>
+                            <th className="px-2 py-2 border-b text-center">Check</th>
                         )}
-                        <th className="px-6 py-2 border-b">ID</th>
-                        <th className="px-3 py-2 border-b">AccID</th>
-                        <th className="px-8 py-2 border-b">Password</th>
-                        <th className="px-6 py-2 border-b">Balance</th>
-                        <th className="px-6 py-2 border-b">BranchID</th>
-                        <th className="px-12 py-2 border-b">AccType</th>
-                        <th className="px-6 py-2 border-b">UP_Date</th>
-                        <th className="px-6 py-2 border-b">UP_User</th>
+                        <th className="px-6 py-2 border-b text-center">ID</th>
+                        <th className="px-3 py-2 border-b text-center">AccID</th>
+                        <th className="px-4 py-2 border-b text-center">Password</th>
+                        <th className="px-4 py-2 border-b text-center">AccType</th>
+                        <th className="px-4 py-2 border-b text-center">UP_Date</th>
+                        <th className="px-4 py-2 border-b text-center">UP_User</th>
                         {searchAccs ? (null) : (
                             <>
-                                <th className="px-4 py-2 border-b">DELETE</th>
                                 <th className="px-4 py-2 border-b">EDIT</th>
                             </>
                         )}
@@ -358,14 +336,12 @@ const Acc = () => {
 
                     {searchAccs ? ( // 如果有查詢結果
                         <tr>
-                            <td className="py-2 px-4 border-b">{searchAccs.ID}</td>
-                            <td className="py-2 px-4 border-b">{searchAccs.AccID}</td>
-                            <td className="py-2 px-4 border-b">{searchAccs.Password}</td>
-                            <td className="py-2 px-4 border-b">{searchAccs.Balance}</td>
-                            <td className="py-2 px-4 border-b">{searchAccs.BranchID}</td>
-                            <td className="py-2 px-4 border-b">{searchAccs.AccType}</td>
-                            <td className="border-b px-4 py-2">{searchAccs.UP_Date}</td>
-                            <td className="border-b px-4 py-2">{searchAccs.UP_User}</td>
+                            <td className="py-2 px-4 border-b text-center">{searchAccs.ID}</td>
+                            <td className="py-2 px-4 border-b text-center">{searchAccs.AccID}</td>
+                            <td className="py-2 px-4 border-b text-center">{searchAccs.Password}</td>
+                            <td className="py-2 px-4 border-b text-center">{searchAccs.AccType}</td>
+                            <td className="border-b px-4 py-2 text-center">{searchAccs.UP_Date}</td>
+                            <td className="border-b px-4 py-2 text-center">{searchAccs.UP_User}</td>
                         </tr>
                     ) : (
                         currentAccounts.map((account) => (
@@ -378,27 +354,19 @@ const Acc = () => {
                                         onChange={() => handleCheckboxChange(account.ID)}
                                     />
                                 </td>
-                                <td className="border-b px-4 py-2">{account.ID}</td>
-                                <td className="border-b px-4 py-2">{account.AccID}</td>
-                                <td className="border-b px-4 py-2">{account.Password}</td>
-                                <td className="border-b px-4 py-2">{account.Balance}</td>
-                                <td className="border-b px-4 py-2">{account.BranchID}</td>
-                                <td className="border-b px-4 py-2">{account.AccType}</td>
-                                <td className="border-b px-4 py-2">{account.UP_Date}</td>
-                                <td className="border-b px-4 py-2">{account.UP_User}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.ID}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.AccID}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.Password}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.AccType}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.UP_Date}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.UP_User}</td>
                                 {/*刪除按鈕*/}
-                                <td className="border px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
-                                    <button
-                                        className="select-none px-8 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400"
-                                        onClick={() => deleteAccount(account.ID)}>刪除
-                                    </button>
-                                </td>
-                                {/*修改按鈕 + 打開modal*/}
                                 <td className="border-b px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
-                                    <button
-                                        className="select-none px-8 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400"
-                                        onClick={() => openEditModal(account)}>修改
-                                    </button>
+                                    <div className="flex justify-center" >
+                                        <Icon icon="mdi:trash-can-circle" color="red" width="36" height="36" onClick={() => deleteAccount(account.ID)}>刪除</Icon>
+                                        <div className="mx-1"></div>
+                                        <Icon icon="iconoir:edit" color="green" width="36" height="36" onClick={() => openEditModal(account)}>修改</Icon>
+                                    </div>
                                     {/*Modal內的顯示*/}
                                     <Modal isOpen={isEditModalOpen}  onClose={() => closeModal()}>
                                         <form className={"text-xl"}>
@@ -433,28 +401,6 @@ const Acc = () => {
                                                     name="Password"
                                                     value={editAccount?.Password || ''}
                                                     onChange={(e) => handleEditInputChange(e, 'Password')}
-                                                    className="border border-black w-full mb-4 p-1.5 rounded-lg"
-                                                />
-                                            </div>
-                                            <div>
-                                                <p>Balance:</p>
-                                                <input
-                                                    type="text"
-                                                    id="Balance"
-                                                    name="Balance"
-                                                    value={editAccount?.Balance || ''}
-                                                    onChange={(e) => handleEditInputChange(e, 'Balance')}
-                                                    className="border border-black w-full mb-4 p-1.5 rounded-lg"
-                                                />
-                                            </div>
-                                            <div>
-                                                <p>BranchID:</p>
-                                                <input
-                                                    type="text"
-                                                    id="BranchID"
-                                                    name="BranchID"
-                                                    value={editAccount?.BranchID || ''}
-                                                    onChange={(e) => handleEditInputChange(e, 'BranchID')}
                                                     className="border border-black w-full mb-4 p-1.5 rounded-lg"
                                                 />
                                             </div>
