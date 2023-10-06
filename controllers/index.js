@@ -422,4 +422,37 @@ router.post('/login', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+router.post('/logout', async (req, res) => {
+    try {
+        if (req.session.user) {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error('Error destroying session:', err);
+                    res.status(500).json({success: false, message: 'Internal Server Error' });
+                } else {
+                    res.status(200).json({success: true,message:'logout成功'});
+                }
+            });
+        } else {
+            // 用户未登录，返回未经授权的状态码
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+router.get('/profile', (req, res) => {
+    // 检查会话中是否有用户信息
+    if (req.session.user && req.session.user.AccID) {
+        // 用户已经登录，可以访问他们的信息
+        const username = req.session.user.AccID;
+        res.json({ message: `Welcome, ${username}!` });
+    } else {
+        // 用户未登录
+        res.status(401).json({ message: 'Unauthorized' });
+    }
+});
+
 export default router;

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import PropTypes from "prop-types";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
+import Logout from "./logout.jsx";
 
 const Layout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -16,21 +17,22 @@ const Layout = ({ children }) => {
         setActiveLink(index);
     };
 
-
     return (
         <div className={`flex h-screen ${isSidebarOpen ? 'overflow-hidden' : ''}`}>
             {/* 側邊欄 */}
             <aside className={`bg-stone-200 w-64 min-h-screen p-4 ${isSidebarOpen ? 'block' : 'hidden'}`}>
                 {/* 在這裡添加側邊欄的內容 */}
                 <ul className="mt-8">
-                    <li className={`text-center ${activeLink === 0 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
-                        <Link to="/" onClick={() => handleLinkClick(0)}>病患名單</Link>
-                    </li>
                     <li className={`text-center mt-4 ${activeLink === 1 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
                         <Link to="/acc" onClick={() => handleLinkClick(1)}>帳號設置</Link>
                     </li>
                     <li className={`text-center mt-4 ${activeLink === 2 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
-                        <Link to="/login" onClick={() => handleLinkClick(2)}>登入畫面</Link>
+                        <Link to="/patient" onClick={() => handleLinkClick(2)}>病患名單</Link>
+                    </li>
+                </ul>
+                <ul>
+                    <li className={`text-center mt-4 ${activeLink === 3 ? 'bg-slate-500 border border-slate-500 rounded-lg text-white' : ''}`}>
+                        <button onClick={Logout}>登出</button>
                     </li>
                 </ul>
             </aside>
