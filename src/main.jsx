@@ -6,15 +6,17 @@ import Patient from './routes/patient.jsx';
 import './index.css';
 import Layout from "./routes/layout";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const App = () => {
     //window.localStorage.clear();
-    // window.localStorage.setItem("loggedIn",false);
     const isLoggedIn = window.localStorage.getItem("loggedIn");
     console.log(isLoggedIn);
     return (
         <BrowserRouter>
+            <ToastContainer />
             <Routes>
                 <Route exact path="/" element={isLoggedIn=="true"?<Patient/> : <Root/>} />
                 {/*<Route path="/" element={<Layout><Root /></Layout>} />*/}

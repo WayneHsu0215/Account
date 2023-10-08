@@ -1,12 +1,32 @@
 import {useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {toast} from 'react-toastify';
+
 const Login = () => {
-    const [AccID, setAccID] = useState('');
-    const [password, setPassword] = useState('');
-    const [AccType, setAccType] = useState('');
-    const [UP_User, setUP_User] = useState('');
     const [showAdditionalFields, setShowAdditionalFields] = useState(false);
     const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        AccID: '',
+        password: '',
+        AccType: '',
+        UP_User: '',
+    });
+
+    const { AccID, password, AccType, UP_User } = formData;
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+    const notify = () =>
+        toast.success(`登入成功，歡迎回來${AccID}!`, {
+            className: "font-semibold",
+        });
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -26,8 +46,7 @@ const Login = () => {
             }else if (data.success) {
                 window.localStorage.setItem("loggedIn", true);
                 navigate('/patient');
-                alert(`登入成功，歡迎!${AccID}`,);
-                console.log('localstorage:',window.localStorage);
+                notify();
             } else {
                 console.error('login failed');
                 alert('帳號密碼錯誤');
@@ -41,6 +60,25 @@ const Login = () => {
         setShowAdditionalFields(true);
     };
 
+    const backToLogin = (e) => {
+        e.preventDefault();
+        setShowAdditionalFields(false);
+        setFormData({
+            AccID: '',
+            password: '',
+            AccType: '',
+            UP_User: '',
+        });
+    }
+    const clearInput = (e) => {
+        e.preventDefault();
+        setFormData({
+            AccID: '',
+            password: '',
+            AccType: '',
+            UP_User: '',
+        });
+    }
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -50,7 +88,7 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ AccID, password}),
+                body: JSON.stringify({ AccID, password,AccType,UP_User}),
             });
 
             const data = await response.json();
@@ -58,9 +96,14 @@ const Login = () => {
 
             if (data.success) {
                 navigate('/');
-                alert(`歡迎!${AccID}`,);
                 setShowAdditionalFields(false);
-                console.log('localstorage:',window.localStorage);
+                alert('帳戶建立成功，請重新登入');
+                setFormData({
+                    AccID: '',
+                    password: '',
+                    AccType: '',
+                    UP_User: '',
+                });
             } else {
                 console.error('Signup failed');
                 alert('帳戶建立失敗');
@@ -95,15 +138,15 @@ const Login = () => {
                                 <div className=" relative w-80">
                                     <input
                                         type="text"
-                                        id="username"
-                                        name="username"
+                                        id="AccID"
+                                        name="AccID"
                                         value={AccID}
                                         required
-                                        onChange={(e) => setAccID(e.target.value)}
+                                        onChange={handleChange}
                                         className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none "
                                         placeholder="Username"
                                     />
-                                    <label htmlFor="Username"
+                                    <label htmlFor="AccID"
                                            className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
                                         Username
                                     </label>
@@ -113,23 +156,26 @@ const Login = () => {
                                         type="password"
                                         id="password"
                                         name="password"
-                                        className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                                        required
+                                        value={password}
+                                        onChange={handleChange}
                                         placeholder="Password"
-                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none "
                                     />
-                                    <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
+                                    <label htmlFor="password"
+                                           className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                                        Password
+                                    </label>
                                 </div>
-                                {showAdditionalFields && (
+                                    {showAdditionalFields && (
                                     <>
                                         <div className="relative">
                                             <input
                                                 type="text"
-                                                id="accType"
-                                                name="accType"
+                                                id="AccType"
+                                                name="AccType"
                                                 required
                                                 value={AccType}
-                                                onChange={(e) => setAccType(e.target.value)}
+                                                onChange={handleChange}
                                                 className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                                                 placeholder="AccType"
                                             />
@@ -141,11 +187,11 @@ const Login = () => {
                                         <div className="relative">
                                             <input
                                                 type="text"
-                                                id="upUser"
-                                                name="upUser"
+                                                id="UP_User"
+                                                name="UP_User"
                                                 required
                                                 value={UP_User}
-                                                onChange={(e) => setUP_User(e.target.value)}
+                                                onChange={handleChange}
                                                 className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                                                 placeholder="UP_User"
                                             />
@@ -155,14 +201,18 @@ const Login = () => {
                                             </label>
                                         </div>
                                         <div>
-                                            <button type="submit" className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 " onClick={handleSignUp}>建立新帳戶</button>
+                                            <button type="submit" className="mr-1 w-40 bg-blue-500 text-white p-2.5 rounded-md hover:bg-blue-600 font-semibold" onClick={clearInput}>清除</button>
+                                            <button type="submit" className="w-40 bg-blue-500 text-white p-2.5 rounded-md hover:bg-blue-600 font-semibold" onClick={backToLogin}>取消</button>
+                                        </div>
+                                        <div>
+                                            <button type="submit" className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 font-semibold" onClick={handleSignUp}>建立新帳戶</button>
                                         </div>
                                     </>)}
                                 <div className="relative flex justify-between">
                                     {!showAdditionalFields && (
                                         <>
-                                            <button type="submit" className="bg-blue-500 text-white rounded-md px-5 py-3 hover:bg-blue-600 mt-8" onClick={handleLogin}>登入</button>
-                                            <button type="submit" className="bg-blue-500 text-white rounded-md px-3 py-3 hover:bg-blue-600 mt-8" onClick={handleOpenSignUpform}>建立帳戶</button>
+                                            <button type="submit" className="bg-blue-500 text-white rounded-md px-5 py-3 hover:bg-blue-600 mt-8 font-semibold" onClick={handleLogin}>登入</button>
+                                            <button type="submit" className="bg-blue-500 text-white rounded-md px-3 py-3 hover:bg-blue-600 mt-8 font-semibold" onClick={handleOpenSignUpform}>建立帳戶</button>
                                         </>
                                     )}
                                 </div>
