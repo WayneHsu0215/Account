@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
@@ -102,7 +100,7 @@ const Layout = ({ children }) => {
                     </div>
                 </div>
             </aside>
-            <div className="flex-grow flex flex-col">
+            <div className="flex-grow flex flex-col overflow-hidden"> {/* Added 'overflow-hidden' */}
                 <header className="bg-gray-100 p-2">
                     <button
                         className="font-bold py-2 px-4 rounded-full"
@@ -116,8 +114,10 @@ const Layout = ({ children }) => {
                         />
                     </button>
                 </header>
-                <main className="bg-gray-100 flex-grow">{children}</main>
-                <footer className="text-center p-2 bg-gray-100">HELLO!!!!!</footer>
+                <main className="bg-gray-100 overflow-y-auto flex-grow"> {/* Added 'overflow-y-auto' */}
+                    {children}
+
+                <footer className="text-center  bg-gray-100 ">Copyrights © All Rights Reserved </footer> </main>
             </div>
         </div>
     );
