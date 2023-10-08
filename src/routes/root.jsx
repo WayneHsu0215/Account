@@ -58,6 +58,12 @@ const Login = () => {
     const handleOpenSignUpform = (e) => {
         e.preventDefault();
         setShowAdditionalFields(true);
+        setFormData({
+            AccID: '',
+            password: '',
+            AccType: '',
+            UP_User: '',
+        });
     };
 
     const backToLogin = (e) => {
@@ -93,7 +99,6 @@ const Login = () => {
 
             const data = await response.json();
             console.log('DATA ；',data);
-
             if (data.success) {
                 navigate('/');
                 setShowAdditionalFields(false);
