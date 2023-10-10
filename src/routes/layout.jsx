@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 import Logout from "./logout.jsx";
+import {getCookie} from "../main.jsx";
 
 const Layout = ({ children }) => {
     const [activeLink, setActiveLink] = useState(0);
@@ -25,8 +26,7 @@ const Layout = ({ children }) => {
         setIsSidebarHovered(false);
     };
 
-    const currentUser = '管理者';
-
+    const cu = getCookie("AccID");
     return (
         <div className={`flex h-screen`}>
             <aside
@@ -45,7 +45,7 @@ const Layout = ({ children }) => {
                                         icon="carbon:user-avatar-filled"
                                         style={{ fontSize: (isSidebarOpen || isSidebarHovered) ? '70px' : '40px' }}
                                     />
-                                    <span style={{ marginTop: '8px' }}>{currentUser}</span>
+                                    {(isSidebarOpen || isSidebarHovered) && <span style={{ marginTop: '8px' }}>{cu}</span>}
                                 </div>
                             </div>
                             <li

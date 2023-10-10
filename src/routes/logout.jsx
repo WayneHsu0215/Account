@@ -7,11 +7,11 @@ const Logout = async (e) => {
                 'Content-Type': 'application/json',
             }
         });
-
         const data = await response.json();
         console.log('Data:',data);
         if (data.success) {
             document.cookie = "loggedIn=false";
+            document.cookie = "AccID=";
             window.location.href = '/';
         } else {
             console.error('logout failed');

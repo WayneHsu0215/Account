@@ -43,6 +43,7 @@ const Login = () => {
             {
                 alert('請輸入帳號密碼');
             }else if (data.success) {
+                document.cookie = `AccID=${AccID}`;
                 document.cookie = 'loggedIn=true;';
                 navigate('/patient');
                 notify();
