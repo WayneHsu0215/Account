@@ -441,12 +441,13 @@ const Acc = () => {
                                                     type="text"
                                                     id="Password"
                                                     name="Password"
-                                                    value={editAccount?.Password || ''}
+                                                    value={(editAccount?.Password || '').substr(0, 5).replace(/./g, '*')}
                                                     onChange={(e) => handleEditInputChange(e, 'Password')}
                                                     className="border border-black w-full rounded-lg p-2 text-center text-lg"
                                                     maxLength={100}
                                                 />
                                             </div>
+
                                             <div className="mb-4">
                                                 <label className="block text-gray-700 text-lg font-bold mb-2">AccType:</label>
                                                 <input

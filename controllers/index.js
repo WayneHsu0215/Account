@@ -233,14 +233,15 @@ router.put('/accounts/:ID', async (req, res) => {
     try {
         const pool = req.app.locals.pool;
         const { ID } = req.params;
-        const updatedTrans = req.body;
+        const {AccID, Password, AccType, UP_User} = req.body; // 從請求主體中獲取新的交易資料
+        const hashedPassword = await bcrypt.hash(Password,10);
 
         const result = await pool.request()
             .input('ID', sql.Int, ID)
-            .input('AccID', sql.NVarChar, updatedTrans.AccID)
-            .input('Password', sql.NVarChar, updatedTrans.Password)
-            .input('AccType', sql.NVarChar, updatedTrans.AccType)
-            .input('UP_User', sql.NVarChar, updatedTrans.UP_User)
+            .input('AccID', sql.NVarChar, AccID)
+            .input('Password', sql.NVarChar, hashedPassword)
+            .input('AccType', sql.NVarChar, AccType)
+            .input('UP_User', sql.NVarChar, UP_User)
             .query('UPDATE Account SET AccID = @AccID, Password = @Password,AccType = @AccType, UP_Date = GETDATE(),UP_User = @UP_User WHERE ID = @ID');
 
         if (result.rowsAffected[0] === 0) {
