@@ -1,7 +1,6 @@
 import {useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
-
 const Login = () => {
     const [showAdditionalFields, setShowAdditionalFields] = useState(false);
     const navigate = useNavigate();
@@ -89,12 +88,25 @@ const Login = () => {
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
+            const accountCountResponse = await fetch('/api/usercount');
+            const accountCountData = await accountCountResponse.json();
+            const currentAccountCount = accountCountData.count;
+
+            // 生成新的ID
+            const newID = currentAccountCount + 1;
+
             const response = await fetch('/api/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ AccID, password,AccType,UP_User}),
+                body: JSON.stringify({
+                    ID: newID,
+                    AccID,
+                    password,
+                    AccType,
+                    UP_User,
+                }),
             });
 
             const data = await response.json();

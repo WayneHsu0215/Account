@@ -1,4 +1,4 @@
-import { Router } from "express";
+import {response, Router} from "express";
 import sql from 'mssql';
 import bcrypt from 'bcrypt';
 
@@ -157,22 +157,24 @@ router.get('/accounts', async (req, res) => {
 router.post('/accounts', async (req, res) => {
     try {
         const pool = req.app.locals.pool;
-        const newAcc = req.body; // 從請求主體中獲取新的交易資料
+        const {ID,AccID, Password, AccType, UP_User} = req.body; // 從請求主體中獲取新的交易資料
+        const hashedPassword = await bcrypt.hash(Password,10);
         // 將新的交易資料保存到資料庫
         const result = await pool.request()
-            .input('ID', sql.Int, newAcc.ID)
-            .input('AccID', sql.NVarChar, newAcc.AccID)
-            .input('Password', sql.NVarChar, newAcc.Password)
-            .input('AccType', sql.NVarChar, newAcc.AccType)
-            .input('UP_User', sql.NVarChar, newAcc.UP_User)
-            .query('INSERT INTO Account (ID, AccID, Password, AccType, UP_User) VALUES (@ID,  @AccID, @Password,@AccType,@UP_User)');
-
-        res.status(201).json({ message: 'Transaction added successfully' });
+            .input('ID', sql.INT, ID)
+            .input('AccID', sql.NVarChar, AccID)
+            .input('Password', sql.NVarChar,hashedPassword)
+            .input('AccType', sql.NVarChar, AccType)
+            .input('UP_User', sql.NVarChar, UP_User)
+            .query('INSERT INTO Account (ID,AccID, Password, AccType, UP_User) VALUES (@ID,@AccID, @Password,@AccType,@UP_User)');
+        res.status(201).json({ message: `Transaction added successfully${ID}` });
     } catch (err) {
         console.error('Error adding new transaction', err);
         res.status(500).send('Internal Server Error');
     }
+
 });
+
 
 router.get('/accounts/:ID', async (req, res) => {
     try {
@@ -372,18 +374,16 @@ router.get('/patientsearch', async (req, res) => {
 router.post('/signup', async (req, res) => {
     try {
         const pool = req.app.locals.pool;
-        const {AccID, password, AccType, UP_User} = req.body; // 從請求主體中獲取新的交易資料
+        const {ID,AccID, password, AccType, UP_User} = req.body; // 從請求主體中獲取新的交易資料
         const hashedPassword = await bcrypt.hash(password,10);
-        console.log('AccID:',AccID);
-        console.log('PWD',password);
         // 將新的交易資料保存到資料庫
         const result = await pool.request()
+            .input('ID', sql.INT, ID)
             .input('AccID', sql.NVarChar, AccID)
             .input('Password', sql.NVarChar,hashedPassword)
             .input('AccType', sql.NVarChar, AccType)
             .input('UP_User', sql.NVarChar, UP_User)
-            .query('INSERT INTO Account (AccID, Password, AccType, UP_User) VALUES (@AccID, @Password,@AccType,@UP_User)');
-        console.log("Query Result: ", result.recordset); // 印出查詢結果，方便除錯
+            .query('INSERT INTO Account (ID,AccID, Password, AccType, UP_User) VALUES (@ID,@AccID, @Password,@AccType,@UP_User)');
         res.status(201).json({ success: true,message: 'Transaction added successfully' });
     } catch (err) {
         console.error('Error adding new transaction', err);
@@ -394,7 +394,6 @@ router.post('/login', async (req, res) => {
     try {
         const { AccID,password } = req.body;
         const pool = req.app.locals.pool;
-        // 查詢用於儲存明文密碼的字段
         const query = `SELECT AccID, password FROM Account WHERE AccID = @username;`;
 
         const result = await pool.request()
@@ -409,7 +408,7 @@ router.post('/login', async (req, res) => {
                 const isValid = await bcrypt.compare(password, result.recordset[0].password)
                 if (isValid) {
                     req.session.user = {AccID: AccID};
-                    res.json({success: true, message: 'Login successful'});
+                    res.json({success: true, message: `Login successful ${AccID}}`});
                 } else {
                     res.status(401).json({success: false, message: 'Invalid Info'});
                 }
@@ -443,16 +442,23 @@ router.post('/logout', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-router.get('/profile', (req, res) => {
-    // 检查会话中是否有用户信息
-    if (req.session.user && req.session.user.AccID) {
-        // 用户已经登录，可以访问他们的信息
-        const username = req.session.user.AccID;
-        res.json({ message: `Welcome, ${username}!` });
-    } else {
-        // 用户未登录
-        res.status(401).json({ message: 'Unauthorized' });
+
+router.get('/usercount', async (req, res) => {
+    try {
+        const pool = req.app.locals.pool;
+        const query = 'SELECT COUNT(*) AS total_rows FROM Account;';
+        const result = await pool.request().query(query);
+        if (result) {
+            const total_rows = result.recordset[0].total_rows;
+            res.json({ count: total_rows });
+        } else {
+            res.status(400).send('123');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
 });
+
 
 export default router;

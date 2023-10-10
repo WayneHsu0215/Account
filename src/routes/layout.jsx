@@ -6,7 +6,7 @@ import Logout from "./logout.jsx";
 
 const Layout = ({ children }) => {
     const [activeLink, setActiveLink] = useState(0);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true); // 默认展開
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarHovered, setIsSidebarHovered] = useState(false);
 
     const handleLinkClick = (index) => {
@@ -48,26 +48,8 @@ const Layout = ({ children }) => {
                                     <span style={{ marginTop: '8px' }}>{currentUser}</span>
                                 </div>
                             </div>
-
                             <li
                                 className={`h-8 mt-12 text-center flex justify-center items-center ${
-                                    activeLink === 1
-                                        ? 'bg-slate-500 border border-slate-500 rounded-lg text-white'
-                                        : ''
-                                }`}
-                            >
-                                <Link to="/acc" onClick={() => handleLinkClick(1)}>
-                                    <div className="flex items-center">
-                                        <Icon
-                                            icon="icon-park-outline:people"
-                                            style={{ marginRight: '8px', fontSize: '24px' }}
-                                        />
-                                        {(isSidebarOpen || isSidebarHovered) && <span>帳號設置</span>}
-                                    </div>
-                                </Link>
-                            </li>
-                            <li
-                                className={`h-8 mt-4 text-center flex justify-center items-center ${
                                     activeLink === 2
                                         ? 'bg-slate-500 border border-slate-500 rounded-lg text-white'
                                         : ''
@@ -80,6 +62,23 @@ const Layout = ({ children }) => {
                                             style={{ marginRight: '8px', fontSize: '24px' }}
                                         />
                                         {(isSidebarOpen || isSidebarHovered) && <span>病患名單</span>}
+                                    </div>
+                                </Link>
+                            </li>
+                            <li
+                                className={`h-8 mt-4 text-center flex justify-center items-center ${
+                                    activeLink === 1
+                                        ? 'bg-slate-500 border border-slate-500 rounded-lg text-white'
+                                        : ''
+                                }`}
+                            >
+                                <Link to="/acc" onClick={() => handleLinkClick(1)}>
+                                    <div className="flex items-center">
+                                        <Icon
+                                            icon="icon-park-outline:people"
+                                            style={{ marginRight: '8px', fontSize: '24px' }}
+                                        />
+                                        {(isSidebarOpen || isSidebarHovered) && <span>帳號設置</span>}
                                     </div>
                                 </Link>
                             </li>

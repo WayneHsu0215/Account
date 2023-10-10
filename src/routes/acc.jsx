@@ -22,8 +22,9 @@ const Acc = () => {
     useEffect(() => {
         fetchAccsData();
     }, []);
+
+
     const [newAccount, setNewAccount] = useState({
-        ID: '',
         AccID: '',
         Password: '',
         AccType: '',
@@ -60,34 +61,28 @@ const Acc = () => {
     };
 
 
+    const getMaxID = () => {
+        // 表中的最大ID
+        const maxID = Math.max(...Accounts.map((Accounts) => Accounts.ID), 0);
+        return maxID + 1; // 下一個可用的ID
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         try {
             const response = await fetch('/api/accounts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({...newAccount}),
+                body: JSON.stringify({...newAccount, ID: getMaxID()}),
             });
-
             if (!response.ok) {
                 throw new Error('Failed to add new Account');
             }
-
-            // 清空表單字段
-            setNewAccount({
-                ID: '',
-                AccID: '',
-                Password: '',
-                AccType: '',
-                UP_User:'',
-            });
-
             // 刷新交易列表
             fetchAccsData();
             setIsAddModalOpen(false);
+            clearForm();
         } catch (error) {
             console.error('Error adding new Account:', error);
             alert('輸入錯誤');
@@ -120,6 +115,15 @@ const Acc = () => {
             [name]: newValue,
         }));
     };
+    const clearForm = () => {
+        setNewAccount({
+            AccID: '',
+            Password: '',
+            AccType: '',
+            UP_User:'',
+        });
+        closeModal();
+    }
     const handleEditSubmit = async (event, ID) => {
         event.preventDefault();
         try {
@@ -188,7 +192,6 @@ const Acc = () => {
 
     };
 
-
     const [currentPage, setCurrentPage] = useState(1);
     const AccountsPerPage = 10;
     const indexOfLastTransaction = currentPage * AccountsPerPage;
@@ -206,8 +209,6 @@ const Acc = () => {
             setCurrentPage(1);
         }
     };
-
-
 
     const nextPage = () => {
         if (currentPage < Math.ceil(Accounts.length / AccountsPerPage)) {
@@ -229,53 +230,84 @@ const Acc = () => {
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
             <h1 className="text-3xl font-semibold mb-4 m-4">Account List</h1>
             {/*新增表單*/}
-            <Modal isOpen={isAddModalOpen}  onClose={() => closeModal()}>
-            <form onSubmit={handleSubmit} className="w-full flex  justify-between">
-                <input
-                    type="text"
-                    name="ID"
-                    placeholder="ID"
-                    value={newAccount.ID}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-                <input
-                    type="text"
-                    name="AccID"
-                    placeholder="AccID"
-                    value={newAccount.AccID}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-                <input
-                    type="text"
-                    name="Password"
-                    placeholder="Password"
-                    value={newAccount.Password}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-                <input
-                    type="text"
-                    name="AccType"
-                    placeholder="AccType"
-                    value={newAccount.AccType}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-                <input
-                    type="text"
-                    name="UP_User"
-                    placeholder="UP_User"
-                    value={newAccount.UP_User}
-                    onChange={handleInputChange}
-                    className="border border-black  w-1/6 m-2 rounded-lg text-center"
-                />
-
-                <button type="submit"
-                        className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-1/6 m-1 rounded-lg">新增
-                </button>
-            </form>
+            <Modal isOpen={isAddModalOpen} onClose={() => closeModal()} >
+                <div className="flex justify-center items-center h-full">
+                    <form onSubmit={handleSubmit} className="w-full max-w-xl p-2 bg-white rounded-lg">
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-lg font-bold mb-2">ID:</label>
+                            <input
+                                type="text"
+                                name="ID"
+                                disabled
+                                placeholder="ID"
+                                value={getMaxID()}
+                                onChange={handleInputChange}
+                                className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                maxLength={10}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-lg font-bold mb-2">AccID:</label>
+                            <input
+                                type="text"
+                                name="AccID"
+                                placeholder="AccID"
+                                value={newAccount.AccID}
+                                onChange={handleInputChange}
+                                className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                maxLength={10}
+                                autoComplete={"off"}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-lg font-bold mb-2">Password:</label>
+                            <input
+                                type="text"
+                                name="Password"
+                                placeholder="Password"
+                                value={newAccount.Password}
+                                onChange={handleInputChange}
+                                className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                maxLength={100}
+                                autoComplete={"off"}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-lg font-bold mb-2">AccType:</label>
+                            <input
+                                type="text"
+                                name="AccType"
+                                placeholder="AccType"
+                                value={newAccount.AccType}
+                                onChange={handleInputChange}
+                                className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                maxLength={3}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-lg font-bold mb-2">UP_User:</label>
+                            <input
+                                type="text"
+                                name="UP_User"
+                                placeholder="UP_User"
+                                value={newAccount.UP_User}
+                                onChange={handleInputChange}
+                                className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                maxLength={20}
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className="bg-amber-200 text-black px-4 h-14 hover:bg-amber-400  mr-4 w-40 rounded-lg text-xl"
+                        >新增
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-amber-200 text-black px-4 h-14 hover:bg-amber-400  w-40  rounded-lg text-lg"
+                            onClick={() => clearForm()}>取消
+                        </button>
+                        </form>
+                </div>
             </Modal>
 
             {/*查詢框框 + 按鈕*/}
@@ -310,7 +342,7 @@ const Acc = () => {
                     </>
                 )}</div>
 
-            {/*交易列表*/}
+            {/*列表*/}
             <div className="h-96 w-full overflow-y-scroll  bg-slate-50 rounded-lg">
 
                 <table className="min-w-full border-2 ">
@@ -338,7 +370,9 @@ const Acc = () => {
                         <tr>
                             <td className="py-2 px-4 border-b text-center">{searchAccs.ID}</td>
                             <td className="py-2 px-4 border-b text-center">{searchAccs.AccID}</td>
-                            <td className="py-2 px-4 border-b text-center">{searchAccs.Password}</td>
+                            <td className="border-b px-4 py-2 text-center">
+                                <span>{'*'.repeat(5)}</span>
+                            </td>
                             <td className="py-2 px-4 border-b text-center">{searchAccs.AccType}</td>
                             <td className="border-b px-4 py-2 text-center">{searchAccs.UP_Date}</td>
                             <td className="border-b px-4 py-2 text-center">{searchAccs.UP_User}</td>
@@ -356,7 +390,12 @@ const Acc = () => {
                                 </td>
                                 <td className="border-b px-4 py-2 text-center">{account.ID}</td>
                                 <td className="border-b px-4 py-2 text-center">{account.AccID}</td>
-                                <td className="border-b px-4 py-2 text-center">{account.Password}</td>
+                                {/*<td className="border-b px-4 py-2 text-center">*/}
+                                {/*    <span style={{ WebkitTextSecurity: 'disc' }}>{account.Password.slice(0, 1)}</span>*/}
+                                {/*</td>*/}
+                                <td className="border-b px-4 py-2 text-center">
+                                    <span>{'*'.repeat(5)}</span>
+                                </td>
                                 <td className="border-b px-4 py-2 text-center">{account.AccType}</td>
                                 <td className="border-b px-4 py-2 text-center">{account.UP_Date}</td>
                                 <td className="border-b px-4 py-2 text-center">{account.UP_User}</td>
@@ -367,11 +406,13 @@ const Acc = () => {
                                         <div className="mx-1"></div>
                                         <Icon icon="iconoir:edit" color="green" width="36" height="36" onClick={() => openEditModal(account)}>修改</Icon>
                                     </div>
-                                    {/*Modal內的顯示*/}
-                                    <Modal isOpen={isEditModalOpen}  onClose={() => closeModal()}>
-                                        <form className={"text-xl"}>
-                                            <div className="flex items-center text-yellow-500 text-4xl">
-                                                <p>ID:</p>
+
+                                    {/*EditModal內的顯示*/}
+                                    <Modal isOpen={isEditModalOpen}  onClose={() => closeModal()} >
+                                        <div className="flex justify-center items-center h-full">
+                                        <form className="w-full max-w-xl p-2 bg-white rounded-lg">
+                                            <div className="mb-4">
+                                                <label className="block text-gray-700 text-lg font-bold mb-2">ID:</label>
                                                 <input
                                                     type="text"
                                                     disabled
@@ -379,61 +420,65 @@ const Acc = () => {
                                                     placeholder="ID"
                                                     value={editAccount?.ID || ''}
                                                     onChange={(e) => handleEditInputChange(e, 'ID')}
-                                                    className="p-5 mb-4"
+                                                    className="border border-black w-full md:w-80 rounded-lg p-2 text-center text-lg"
+                                                    maxLength={10}
                                                 />
                                             </div>
-                                            <div>
-                                                <p>AccID(10):</p>
+                                            <div className="mb-4">
+                                                <label className="block text-gray-700 text-lg font-bold mb-2">AccID:</label>
                                                 <input
                                                     type="text"
                                                     id="AccID"
                                                     name="AccID"
                                                     value={editAccount?.AccID || ''}
                                                     onChange={(e) => handleEditInputChange(e, 'AccID')}
-                                                    className="border border-black w-full mb-4 p-1.5 rounded-lg"
+                                                    className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                                    maxLength={10}
                                                 />
                                             </div>
-                                            <div>
-                                                <p>Password(100):</p>
+                                            <div className="mb-4">
+                                                <label className="block text-gray-700 text-lg font-bold mb-2">Password:</label>
                                                 <input
                                                     type="text"
                                                     id="Password"
                                                     name="Password"
                                                     value={editAccount?.Password || ''}
                                                     onChange={(e) => handleEditInputChange(e, 'Password')}
-                                                    className="border border-black w-full mb-4 p-1.5 rounded-lg"
+                                                    className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                                    maxLength={100}
                                                 />
                                             </div>
-                                            <div>
-                                                <p>AccType(3):</p>
+                                            <div className="mb-4">
+                                                <label className="block text-gray-700 text-lg font-bold mb-2">AccType:</label>
                                                 <input
                                                     type="text"
                                                     id="AccType"
                                                     name="AccType"
                                                     value={editAccount?.AccType || ''}
                                                     onChange={(e) => handleEditInputChange(e, 'AccType')}
-                                                    className="border border-black w-full mb-4 p-1.5 rounded-lg"
+                                                    className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                                    maxLength={3}
                                                 />
                                             </div>
-                                            <div>
-                                                <p>UP_User(20):</p>
+                                            <div className="mb-4">
+                                                <label className="block text-gray-700 text-lg font-bold mb-2">UP_User:</label>
                                                 <input
                                                     type="text"
                                                     id="UP_User"
                                                     name="UP_User"
                                                     value={editAccount?.UP_User || ''}
                                                     onChange={(e) => handleEditInputChange(e, 'UP_User')}
-                                                    className="border border-black w-full mb-4 p-1.5 rounded-lg"
+                                                    className="border border-black w-full rounded-lg p-2 text-center text-lg"
+                                                    maxLength={20}
                                                 />
                                             </div>
-                                        </form>
-                                        <div className="flex justify-center">
                                             <button
                                                 type="submit"
                                                 onClick={(e) => handleEditSubmit(e,editAccount?.ID)}
-                                                className="grid place-items-center mt-4  text-xl bg-amber-200 text-black px-4 h-10 hover:bg-amber-400 rounded-lg">
+                                                className="bg-amber-200 text-black px-4 h-14 hover:bg-amber-400  w-full  rounded-lg text-lg">
                                                 修改完成
                                             </button>
+                                        </form>
                                         </div>
                                     </Modal>
                                 </td>
@@ -462,6 +507,5 @@ const Acc = () => {
         </div>
     );
 };
-
 
 export default Acc;
