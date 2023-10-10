@@ -11,7 +11,7 @@ const Logout = async (e) => {
         const data = await response.json();
         console.log('Data:',data);
         if (data.success) {
-            window.localStorage.clear();
+            document.cookie = "loggedIn=false";
             window.location.href = '/';
         } else {
             console.error('logout failed');
@@ -21,6 +21,7 @@ const Logout = async (e) => {
         console.error('Error during login:', error);
     }
 };
+
 
 
 export default Logout;

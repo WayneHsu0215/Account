@@ -11,14 +11,24 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const App = () => {
-    //window.localStorage.clear();
-    const isLoggedIn = window.localStorage.getItem("loggedIn");
-    console.log(isLoggedIn);
+    function getCookie(name) {
+        const cDecoded = decodeURIComponent(document.cookie);
+        const cArray = cDecoded.split('; ');
+        let  result = null;
+        cArray.forEach((val)=>{
+            if(val.split('=')[0]===name){
+                result = val.split('=')[1];
+            }
+        })
+        return result;
+    }
+    const checklogin = getCookie("loggedIn");
+    console.log('checklogin:',checklogin);
     return (
         <BrowserRouter>
             <ToastContainer />
             <Routes>
-                <Route exact path="/" element={isLoggedIn=="true"?<Patient/> : <Root/>} />
+                <Route exact path="/" element={getCookie(checklogin)=="true"?<Patient/> : <Root/>} />
                 {/*<Route path="/" element={<Layout><Root /></Layout>} />*/}
                 <Route path="/acc" element={<Layout><Acc /></Layout>} />
                 <Route path="/patient" element={<Layout><Patient /></Layout>} />

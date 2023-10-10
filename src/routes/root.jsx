@@ -43,7 +43,7 @@ const Login = () => {
             {
                 alert('請輸入帳號密碼');
             }else if (data.success) {
-                window.localStorage.setItem("loggedIn", true);
+                document.cookie = 'loggedIn=true;';
                 navigate('/patient');
                 notify();
             } else {

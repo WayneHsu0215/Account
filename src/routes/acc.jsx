@@ -1,6 +1,5 @@
 import  {useEffect, useState} from 'react';
-import Modal from './Modal'
-//先npm install --save-dev @iconify/react
+import Modal from './Modal';
 import { Icon } from '@iconify/react';
 const Acc = () => {
     const [Accounts, setAccounts] = useState([]);
