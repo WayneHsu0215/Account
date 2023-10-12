@@ -116,7 +116,8 @@ const Layout = ({ children }) => {
                 <main className="bg-gray-100 overflow-y-auto flex-grow"> {/* Added 'overflow-y-auto' */}
                     {children}
 
-                <footer className="text-center  bg-gray-100 ">Copyrights © All Rights Reserved </footer> </main>
+             </main>
+                <footer className="text-center  bg-gray-100 ">Copyrights © All Rights Reserved </footer>
             </div>
         </div>
     );
