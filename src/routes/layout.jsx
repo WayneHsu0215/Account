@@ -49,14 +49,14 @@ const Layout = ({ children }) => {
                                 </div>
                             </div>
                             <li
-                                className={`h-8 mt-12 text-center flex justify-center items-center ${
+                                className={`h-8 mt-12 pl-2 pt-16 text-center flex justify-center items-right ${
                                     activeLink === 2
                                         ? 'bg-slate-500 border border-slate-500 rounded-lg text-white'
                                         : ''
                                 }`}
                             >
                                 <Link to="/patient" onClick={() => handleLinkClick(2)}>
-                                    <div className="flex items-center">
+                                    <div className="flex items-center ">
                                         <Icon
                                             icon="gridicons:clipboard"
                                             style={{ marginRight: '8px', fontSize: '24px' }}
@@ -101,22 +101,23 @@ const Layout = ({ children }) => {
             </aside>
             <div className="flex-grow flex flex-col overflow-hidden"> {/* Added 'overflow-hidden' */}
                 <header className="bg-gray-100 p-2">
-                    <button
-                        className="font-bold py-2 px-4 rounded-full"
-                        onClick={toggleSidebar}
-                    >
-                        <Icon
-                            icon="carbon:menu"
-                            width="24"
-                            height="24"
-                            style={{ transform: isSidebarOpen ? '' : 'rotate(180deg)' }}
-                        />
-                    </button>
+
                 </header>
                 <main className="bg-gray-100 overflow-y-auto flex-grow"> {/* Added 'overflow-y-auto' */}
                     {children}
 
              </main>
+                <button
+                    className="font-bold py-2 px-4 rounded-full"
+                    onClick={toggleSidebar}
+                >
+                    <Icon
+                        icon="icon-park-outline:nail-polish"
+                        width="12"
+                        height="12"
+                        style={{ transform: isSidebarOpen ? 'rotate(180deg)' : '' }}
+                    />
+                </button>
                 <footer className="text-center  bg-gray-100 ">Copyrights © All Rights Reserved </footer>
             </div>
         </div>
