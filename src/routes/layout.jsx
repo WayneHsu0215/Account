@@ -49,7 +49,7 @@ const Layout = ({ children }) => {
                                 </div>
                             </div>
                             <li
-                                className={`h-8 mt-12 pl-2 pt-16 text-center flex justify-center items-right ${
+                                className={`h-8 mt-12 pl-2 pt-1 text-center flex justify-center items-right ${
                                     activeLink === 2
                                         ? 'bg-slate-500 border border-slate-500 rounded-lg text-white'
                                         : ''
