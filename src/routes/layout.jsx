@@ -49,14 +49,14 @@ const Layout = ({ children }) => {
                                 </div>
                             </div>
                             <li
-                                className={`h-8 mt-12 pl-2 pt-1 text-center flex justify-center items-right ${
+                                className={`h-8 mt-12  text-center flex justify-center items-right ${
                                     activeLink === 2
                                         ? 'bg-slate-500 border border-slate-500 rounded-lg text-white'
                                         : ''
                                 }`}
                             >
                                 <Link to="/patient" onClick={() => handleLinkClick(2)}>
-                                    <div className="flex items-center ">
+                                    <div className="flex items-center  pl-2 pt-1">
                                         <Icon
                                             icon="gridicons:clipboard"
                                             style={{ marginRight: '8px', fontSize: '24px' }}
@@ -73,7 +73,7 @@ const Layout = ({ children }) => {
                                 }`}
                             >
                                 <Link to="/acc" onClick={() => handleLinkClick(1)}>
-                                    <div className="flex items-center">
+                                    <div className="flex items-center pl-2 ">
                                         <Icon
                                             icon="icon-park-outline:people"
                                             style={{ marginRight: '8px', fontSize: '24px' }}
