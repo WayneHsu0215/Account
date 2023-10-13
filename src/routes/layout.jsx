@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logout from "./logout.jsx";
 import {getCookie} from "../main.jsx";
 
+
 const Layout = ({ children }) => {
-    const [activeLink, setActiveLink] = useState(0);
+    const location = useLocation();
+
+    // 解析URL路径以确定activeLink的值
+    const getActiveLinkFromURL = () => {
+        const path = location.pathname;
+        if (path === '/patient') {
+            return 2;
+        } else if (path === '/acc') {
+            return 1;
+        } else {
+            return 0; // 默认值
+        }
+    };
+    const [activeLink, setActiveLink] = useState(getActiveLinkFromURL);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarHovered, setIsSidebarHovered] = useState(false);
 
