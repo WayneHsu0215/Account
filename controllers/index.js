@@ -329,22 +329,22 @@ router.get('/patientsearch', async (req, res) => {
         // 构建查询条件
         const conditions = [];
         if (ID) {
-            conditions.push(`ID = '${ID}'`);
+            conditions.push(`ID LIKE '%${ID}%'`);
         }
         if (PName) {
-            conditions.push(`PName = '${PName}'`);
+            conditions.push(`PName LIKE '%${PName}%'`);
         }
         if (ExamineID) {
-            conditions.push(`ExamineID = '${ExamineID}'`);
+            conditions.push(`ExamineID LIKE '%${ExamineID}%'`);
         }
         if (Examine) {
-            conditions.push(`Examine = '${Examine}'`);
+            conditions.push(`Examine LIKE '%${Examine}%'`);
         }
         if (Diagnosis) {
-            conditions.push(`Diagnosis = '${Diagnosis}'`);
+            conditions.push(`Diagnosis LIKE '%${Diagnosis}%'`);
         }
         if (DName) {
-            conditions.push(`DName = '${DName}'`);
+            conditions.push(`DName LIKE '%${DName}%'`);
         }
         if (startDate && endDate) {
             // 添加日期范围条件
