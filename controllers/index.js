@@ -347,8 +347,18 @@ router.get('/patientsearch', async (req, res) => {
             conditions.push(`DName LIKE '%${DName}%'`);
         }
         if (startDate && endDate) {
-            // 添加日期范围条件
-            conditions.push(`Examinedate BETWEEN '${startDate}' AND '${endDate}'`);
+            // Adjust dates to UTC and add date range condition
+            const startDateUTC = startDate ? new Date(startDate + 'T00:00:00Z') : null;
+            const endDateUTC = endDate ? new Date(endDate + 'T23:59:59Z') : null;
+
+            if (startDateUTC && endDateUTC) {
+                // Format the UTC dates as strings in ISO 8601 format
+                const formattedStartDate = startDateUTC.toISOString();
+                const formattedEndDate = endDateUTC.toISOString();
+
+                // Add the timezone-adjusted date range condition to your query
+                conditions.push(`Examinedate BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`);
+            }
         }
 
         // 如果有条件，将它们添加到查询中

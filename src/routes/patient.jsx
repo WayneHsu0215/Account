@@ -37,13 +37,38 @@ const Patient = () => {
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [isStartDateValid, setIsStartDateValid] = useState(false);
+    const [isEndDateValid, setIsEndDateValid] = useState(false);
 
+
+    const isSearchButtonDisabled = Object.values(searchParams).every((value) => value === '') &&
+        (!startDate || !endDate || !(isStartDateValid && isEndDateValid));
+
+    const handleStartDateChange = (date) => {
+        setStartDate(date);
+        setIsStartDateValid(!!date); // Set to true if a date is selected
+    };
+
+    const handleEndDateChange = (date) => {
+        setEndDate(date);
+        setIsEndDateValid(!!date); // Set to true if a date is selected
+    };
+
+    const adjustDateToUTC = (date) => {
+        if (date) {
+            const adjustedDate = new Date(date);
+            // 将日期调整为UTC时区
+            adjustedDate.setMinutes(adjustedDate.getMinutes() - adjustedDate.getTimezoneOffset());
+            return adjustedDate.toISOString().split('T')[0];
+        }
+        return '';
+    };
 
 // Inside your Root component
     const searchPatient = async () => {
         const { ID, PName, ExamineID, Examine, Diagnosis, DName } = searchParams;
 
-        if (!ID && !PName && !ExamineID && !Examine && !Diagnosis && !DName && !startDate && !endDate) {
+        if (isSearchButtonDisabled) {
             return; // No search parameters provided
         }
 
@@ -55,8 +80,8 @@ const Patient = () => {
                 Examine,
                 Diagnosis,
                 DName,
-                startDate: startDate ? startDate.toISOString().split('T')[0] : '',
-                endDate: endDate ? endDate.toISOString().split('T')[0] : '',
+                startDate: adjustDateToUTC(startDate),
+                endDate: adjustDateToUTC(endDate),
             }).toString();
 
             const response = await fetch(`/api/patientsearch?${queryParams}`);
@@ -76,9 +101,6 @@ const Patient = () => {
         }
     };
 
-
-
-
     const showAllPatients = () => {
         setSearchParams({
             ID: '',
@@ -87,16 +109,12 @@ const Patient = () => {
             Examine: '',
             Diagnosis: '',
             DName: '',
-
         });
-
 
         setStartDate(null);
         setEndDate(null);
 
         setSearchResults([]); // Set searchResults to an empty array
-
-
     };
 
     const clearAllFilters = () => {
@@ -225,9 +243,9 @@ const Patient = () => {
                             <DatePicker
                                 placeholderText="選擇日期範圍"
                                 selected={startDate}
-                                onChange={(date) => setStartDate(date)}
+                                onChange={handleStartDateChange}
                                 dateFormat="yyyy-MM-dd"
-                                showYearDropdown // 启用年份下拉菜单
+                                showYearDropdown
                                 yearDropdownItemNumber={10}
                                 showMonthDropdown
                                 calendarIcon={<i className="fa fa-calendar" />}
@@ -242,9 +260,9 @@ const Patient = () => {
                             <DatePicker
                                 placeholderText="選擇日期範圍"
                                 selected={endDate}
-                                onChange={(date) => setEndDate(date)}
+                                onChange={handleEndDateChange}
                                 dateFormat="yyyy-MM-dd"
-                                showYearDropdown // 启用年份下拉菜单
+                                showYearDropdown
                                 yearDropdownItemNumber={10}
                                 showMonthDropdown
                                 calendarIcon={<i className="fa fa-calendar" />}
@@ -255,20 +273,23 @@ const Patient = () => {
                         </div>
                         <div className="flex-1 flex justify-end items-center gap-4">
                             <button
-                                className="h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400 w-20"
+                                className={`h-8 rounded-lg text-black ${isSearchButtonDisabled ? 'bg-gray-400' : 'bg-amber-200 hover:bg-amber-400'} w-20`}
                                 onClick={searchPatient}
+                                disabled={isSearchButtonDisabled}
                             >
                                 查詢
                             </button>
                             <button
-                                className="px-4 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400 w-24"
+                                className={`px-4 h-8 rounded-lg text-black ${isSearchButtonDisabled ? 'bg-gray-400' : 'bg-amber-200 hover-bg-amber-400'} w-24`}
                                 onClick={clearAllFilters}
+                                disabled={isSearchButtonDisabled}
                             >
                                 清空條件
                             </button>
                             <button
-                                className="px-4 h-8 rounded-lg text-black bg-amber-200 hover:bg-amber-400 w-24"
+                                className={`px-4 h-8 rounded-lg text-black bg-amber-200 hover-bg-amber-400' w-24`}
                                 onClick={showAllPatients}
+
                             >
                                 顯示全部
                             </button>
