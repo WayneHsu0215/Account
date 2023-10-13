@@ -64,6 +64,22 @@ VALUES
     (1,'admin', 'admin','0', '0');
 GO
 
+CREATE TRIGGER CHECK_DEL_ACC
+    ON Account
+    INSTEAD OF DELETE
+    AS
+    IF(SELECT ID FROM deleted) = 1
+        BEGIN
+            PRINT '不可刪除管理者！'
+            ROLLBACK
+        END
+    ELSE
+        BEGIN
+            DELETE FROM Account
+            WHERE ID IN (SELECT ID FROM deleted)
+        END
+GO
+
 select * from Account
 
 

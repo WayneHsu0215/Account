@@ -1,9 +1,12 @@
 import  {useEffect, useState} from 'react';
 import Modal from './Modal';
 import { Icon } from '@iconify/react';
+import {toast} from "react-toastify";
+import { useNavigate } from 'react-router-dom';
+
 const Acc = () => {
     const [Accounts, setAccounts] = useState([]);
-
+    const navigate = useNavigate();
     const fetchAccsData = async () => {
         try {
             const response = await fetch('/api/accounts');
@@ -89,18 +92,30 @@ const Acc = () => {
     };
 
     //刪除
+    const SuccessNotify = () =>
+        toast.success(`異動成功!`, {
+            className: "font-semibold",
+            autoClose : 1500,
+        });
     const deleteAccount = async (ID) => {
-        try {
-            const response = await fetch(`/api/accounts/${ID}`, {
-                method: 'DELETE',
-            });
+        const confirmDelete = window.confirm('确定要删除吗？');
+        if (confirmDelete) {
+            try {
+                const response = await fetch(`/api/accounts/${ID}`, {
+                    method: 'DELETE',
+                });
 
-            if (!response.ok) {
-                throw new Error('Failed to delete account');
+                if (!response.ok) {
+                    throw new Error('Failed to delete account');
+                }
+                SuccessNotify();
+                fetchAccsData();
+            } catch (error) {
+                console.error('Error deleting account:', error);
             }
+        }else{
+            navigate('/acc');
             fetchAccsData();
-        } catch (error) {
-            console.error('Error deleting account:', error);
         }
     };
 
@@ -138,6 +153,7 @@ const Acc = () => {
             }
             closeModal();
             fetchAccsData();
+            SuccessNotify();
         } catch (error) {
             console.error('Error updating account:', error);
             alert('資料錯誤，請再檢查一次(注意長度限制)');
@@ -328,18 +344,26 @@ const Acc = () => {
                 </button>
             </div>
 
-            {/*刪除與新增 + 按鈕*/}
-            <div className=" justify-left  bg-slate-50 rounded-lg mt-4">
-                {searchAccs ? (null) : (
-                    <>
-                        <button type="submit"
-                                className="bg-amber-200 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start " onClick={handleDeleteSelected}>刪除
-                        </button>
-                        <button type="submit"
-                                className="bg-green-300 text-black px-4 h-8  hover:bg-amber-400 w-24 m-1 rounded-lg" onClick={() => openAddModal()}>新增
-                        </button>
-                    </>
-                )}</div>
+            {/*上面的刪除與新增 + 按鈕*/}
+            <div className="justify-left bg-slate-50 rounded-lg mt-4">
+                {searchAccs? null : (
+                        <>
+                            <button
+                                type="submit"
+                                className="bg-amber-200 text-black px-4 h-8 hover:bg-amber-400 w-24 m-1 rounded-lg justify-items-start"
+                                onClick={handleDeleteSelected}
+                            >刪除
+                            </button>
+                            <button
+                                type="submit"
+                                className="bg-green-300 text-black px-4 h-8 hover:bg-amber-400 w-24 m-1 rounded-lg"
+                                onClick={() => openAddModal()}
+                            >新增
+                            </button>
+                        </>
+                )}
+            </div>
+
 
             {/*列表*/}
             <div className="h-96 w-full overflow-y-scroll  bg-slate-50 rounded-lg">
@@ -348,7 +372,7 @@ const Acc = () => {
                     <thead>
                     <tr>
                         {searchAccs ? (null) : (
-                            <th className="px-2 py-2 border-b text-center">Check</th>
+                            <th className="px-2 py-2 border-b text-center">Select</th>
                         )}
                         <th className="px-6 py-2 border-b text-center">ID</th>
                         <th className="px-3 py-2 border-b text-center">AccID</th>
@@ -380,18 +404,22 @@ const Acc = () => {
                         currentAccounts.map((account) => (
                             <tr key={account.ID}>
                                 <td className="py-2 px-4 border-b text-center">
+                                    {account.ID === 1 ? (
+                                        <input
+                                            type="checkbox"
+                                            disabled
+                                            className="transform scale-150"
+                                        />
+                                    ) : (
                                     <input
                                         type="checkbox"
                                         className="transform scale-150"
                                         checked={selectedAccounts.includes(account.ID)}
                                         onChange={() => handleCheckboxChange(account.ID)}
-                                    />
+                                    />)}
                                 </td>
                                 <td className="border-b px-4 py-2 text-center">{account.ID}</td>
                                 <td className="border-b px-4 py-2 text-center">{account.AccID}</td>
-                                {/*<td className="border-b px-4 py-2 text-center">*/}
-                                {/*    <span style={{ WebkitTextSecurity: 'disc' }}>{account.Password.slice(0, 1)}</span>*/}
-                                {/*</td>*/}
                                 <td className="border-b px-4 py-2 text-center">
                                     <span>{'*'.repeat(5)}</span>
                                 </td>
@@ -399,13 +427,15 @@ const Acc = () => {
                                 <td className="border-b px-4 py-2 text-center">{account.UP_Date}</td>
                                 <td className="border-b px-4 py-2 text-center">{account.UP_User}</td>
                                 {/*刪除按鈕*/}
+
                                 <td className="border-b px-4 py-4" style={{ whiteSpace: 'nowrap' }}>
                                     <div className="flex justify-center" >
-                                        <Icon icon="mdi:trash-can-circle" color="red" width="36" height="36" onClick={() => deleteAccount(account.ID)}>刪除</Icon>
+                                        {account.ID === 1 ? (null) : (
+                                            <Icon icon="mdi:trash-can-circle" color="red" width="36" height="36" onClick={() => deleteAccount(account.ID)}>刪除</Icon>
+                                        )}
                                         <div className="mx-1"></div>
                                         <Icon icon="iconoir:edit" color="green" width="36" height="36" onClick={() => openEditModal(account)}>修改</Icon>
                                     </div>
-
                                     {/*EditModal內的顯示*/}
                                     <Modal isOpen={isEditModalOpen}  onClose={() => closeModal()} >
                                         <div className="flex justify-center items-center h-full">
