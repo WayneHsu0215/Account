@@ -185,7 +185,7 @@ router.get('/accounts/:ID', async (req, res) => {
         const query = `
             SELECT ID, AccID, Password,AccType,CONVERT(varchar, UP_Date, 23) AS UP_Date, UP_User
             FROM Account
-            WHERE ID = @ID;
+            WHERE ID LIKE '%'+@ID+'%';
         `;
 
         const result = await pool
@@ -198,7 +198,7 @@ router.get('/accounts/:ID', async (req, res) => {
             res.status(404).json({ message: 'TransID not found' });
         } else {
             // 找到匹配的记录，将结果发送到客户端
-            res.json(result.recordset[0]);
+            res.json(result.recordset);
         }
     } catch (err) {
         console.error('Error querying Trans table', err);

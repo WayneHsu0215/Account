@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const Acc = () => {
     const [Accounts, setAccounts] = useState([]);
     const navigate = useNavigate();
+
+
     const fetchAccsData = async () => {
         try {
             const response = await fetch('/api/accounts');
@@ -186,9 +188,11 @@ const Acc = () => {
     const [searchAccs, setSearchAccs] = useState(null);
     const searchAccount = () => {
         if (!searchAccID ) {
+            alert('請輸入AccID');
+
             return;
         }
-
+        setSearchAccs([]);
         fetch(`/api/accounts/${searchAccID}`)
             .then((response) => {
                 if (!response.ok) {
@@ -197,12 +201,18 @@ const Acc = () => {
                 return response.json();
             })
             .then((data) => {
-                setSearchAccs(data);
+                if (Array.isArray(data) && data.length > 0) {
+                    setSearchAccs(data);
+                } else {
+                    alert('查無此AccID');
+                }
                 setSearchAccID('');
-            })
+            }
+            )
             .catch((error) => {
                 console.error('Error searching account:', error);
                 alert('查無此AccID');
+                setSearchAccID('');
             });
 
     };
@@ -390,17 +400,19 @@ const Acc = () => {
                     <tbody>
 
                     {searchAccs ? ( // 如果有查詢結果
-                        <tr>
-                            <td className="py-2 px-4 border-b text-center">{searchAccs.ID}</td>
-                            <td className="py-2 px-4 border-b text-center">{searchAccs.AccID}</td>
-                            <td className="border-b px-4 py-2 text-center">
-                                <span>{'*'.repeat(5)}</span>
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">{searchAccs.AccType}</td>
-                            <td className="border-b px-4 py-2 text-center">{searchAccs.UP_Date}</td>
-                            <td className="border-b px-4 py-2 text-center">{searchAccs.UP_User}</td>
-                        </tr>
-                    ) : (
+                        searchAccs.map((account) => (
+                            <tr key={account.ID}>
+                                <td className="py-2 px-4 border-b text-center">{account.ID}</td>
+                                <td className="py-2 px-4 border-b text-center">{account.AccID}</td>
+                                <td className="border-b px-4 py-2 text-center">
+                                    <span>{'*'.repeat(5)}</span>
+                                </td>
+                                <td className="py-2 px-4 border-b text-center">{account.AccType}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.UP_Date}</td>
+                                <td className="border-b px-4 py-2 text-center">{account.UP_User}</td>
+                            </tr>
+                        ))
+                    ): (
                         currentAccounts.map((account) => (
                             <tr key={account.ID}>
                                 <td className="py-2 px-4 border-b text-center">
