@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { toast } from 'react-toastify';
 
 const Patient = () => {
     const [patient, setPatient] = useState([]);
@@ -72,6 +73,14 @@ const Patient = () => {
             return; // No search parameters provided
         }
 
+        if (startDate > endDate) {
+
+            toast.error('起始日期不能大于結束日期', {
+                className: "font-semibold",
+            });
+            return;
+        }
+
         try {
             const queryParams = new URLSearchParams({
                 ID,
@@ -100,6 +109,7 @@ const Patient = () => {
             console.error('Error searching patient:', error);
         }
     };
+
 
     const showAllPatients = () => {
         setSearchParams({
