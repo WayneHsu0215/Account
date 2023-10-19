@@ -1,7 +1,11 @@
-import {useState } from 'react';
+import {useState,useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
+import AuthContext  from "./AuthContext.jsx";
+
+
 const Login = () => {
+    const {setAuth} = useContext(AuthContext);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false);
     const navigate = useNavigate();
 
@@ -13,6 +17,7 @@ const Login = () => {
     });
 
     const { AccID, password, AccType, UP_User } = formData;
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,14 +43,16 @@ const Login = () => {
             });
 
             const data = await response.json();
-            console.log('data:',data);
+            console.log('DATA:',data);
             if(AccID===''||password==='')
             {
                 alert('請輸入帳號密碼');
             }else if (data.success) {
-                document.cookie = `AccID=${AccID}`;
-                document.cookie = 'loggedIn=true;';
+                setAuth({loggedIn:true});
                 navigate('/patient');
+                document.cookie = `AccID=${AccID}`;
+                document.cookie = "loggedIn=true";
+                window.localStorage.setItem('loggedIn', true);
                 notify();
             } else {
                 console.error('login failed');
@@ -132,7 +139,11 @@ const Login = () => {
         }
     };
 
+
+
+
     return (
+
         <div className="min-h-screen bg-gray-100 py-4 flex flex-col justify-center sm:py-12">
             <div className="relative py-12 sm:max-w-xl sm:mx-auto">
                 <div
@@ -152,89 +163,91 @@ const Login = () => {
                             </>)}
                         <div className="divide-y divide-gray-200">
                             {/*form框*/}
+                            <form onSubmit={handleLogin}>
                             <div className="py-10 px-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7 ">
-                                <div className=" relative w-80">
-                                    <input
-                                        type="text"
-                                        id="AccID"
-                                        name="AccID"
-                                        value={AccID}
-                                        required
-                                        onChange={handleChange}
-                                        className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none "
-                                        placeholder="Username"
-                                    />
-                                    <label htmlFor="AccID"
-                                           className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
-                                        Username
-                                    </label>
-                                </div>
-                                <div className="relative w-80">
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        name="password"
-                                        value={password}
-                                        onChange={handleChange}
-                                        placeholder="Password"
-                                        className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none "
-                                    />
-                                    <label htmlFor="password"
-                                           className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
-                                        Password
-                                    </label>
-                                </div>
-                                    {showAdditionalFields && (
-                                    <>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                id="AccType"
-                                                name="AccType"
-                                                required
-                                                value={AccType}
-                                                onChange={handleChange}
-                                                className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                                                placeholder="AccType"
-                                            />
-                                            <label htmlFor="AccType"
-                                                   className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
-                                                AccType
-                                            </label>
-                                        </div>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                id="UP_User"
-                                                name="UP_User"
-                                                required
-                                                value={UP_User}
-                                                onChange={handleChange}
-                                                className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                                                placeholder="UP_User"
-                                            />
-                                            <label htmlFor="UP_User"
-                                                   className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
-                                                UP_User
-                                            </label>
-                                        </div>
-                                        <div>
-                                            <button type="submit" className="mr-1 w-40 bg-blue-500 text-white p-2.5 rounded-md hover:bg-blue-600 font-semibold" onClick={clearInput}>清除</button>
-                                            <button type="submit" className="w-40 bg-blue-500 text-white p-2.5 rounded-md hover:bg-blue-600 font-semibold" onClick={backToLogin}>取消</button>
-                                        </div>
-                                        <div>
-                                            <button type="submit" className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 font-semibold" onClick={handleSignUp}>建立新帳戶</button>
-                                        </div>
-                                    </>)}
-                                <div className="relative flex justify-between">
-                                    {!showAdditionalFields && (
+                                    <div className=" relative w-80">
+                                        <input
+                                            type="text"
+                                            id="AccID"
+                                            name="AccID"
+                                            value={AccID}
+                                            required
+                                            onChange={handleChange}
+                                            className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none "
+                                            placeholder="Username"
+                                        />
+                                        <label htmlFor="AccID"
+                                               className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                                            Username
+                                        </label>
+                                    </div>
+                                    <div className="relative w-80">
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            value={password}
+                                            onChange={handleChange}
+                                            placeholder="Password"
+                                            className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none "
+                                        />
+                                        <label htmlFor="password"
+                                               className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                                            Password
+                                        </label>
+                                    </div>
+                                        {showAdditionalFields && (
                                         <>
-                                            <button type="submit" className="bg-blue-500 text-white rounded-md px-5 py-3 hover:bg-blue-600 mt-8 font-semibold" onClick={handleLogin}>登入</button>
-                                            <button type="submit" className="bg-blue-500 text-white rounded-md px-3 py-3 hover:bg-blue-600 mt-8 font-semibold" onClick={handleOpenSignUpform}>建立帳戶</button>
-                                        </>
-                                    )}
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    id="AccType"
+                                                    name="AccType"
+                                                    required
+                                                    value={AccType}
+                                                    onChange={handleChange}
+                                                    className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                                                    placeholder="AccType"
+                                                />
+                                                <label htmlFor="AccType"
+                                                       className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                                                    AccType
+                                                </label>
+                                            </div>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    id="UP_User"
+                                                    name="UP_User"
+                                                    required
+                                                    value={UP_User}
+                                                    onChange={handleChange}
+                                                    className="peer placeholder-transparent h-12 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                                                    placeholder="UP_User"
+                                                />
+                                                <label htmlFor="UP_User"
+                                                       className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                                                    UP_User
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <button type="submit" className="mr-1 w-40 bg-blue-500 text-white p-2.5 rounded-md hover:bg-blue-600 font-semibold" onClick={clearInput}>清除</button>
+                                                <button type="submit" className="w-40 bg-blue-500 text-white p-2.5 rounded-md hover:bg-blue-600 font-semibold" onClick={backToLogin}>取消</button>
+                                            </div>
+                                            <div>
+                                                <button type="submit" className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 font-semibold" onClick={handleSignUp}>建立新帳戶</button>
+                                            </div>
+                                        </>)}
+                                    <div className="relative flex justify-between">
+                                        {!showAdditionalFields && (
+                                            <>
+                                                <button type="submit" className="bg-blue-500 text-white rounded-md px-5 py-3 hover:bg-blue-600 mt-8 font-semibold" onClick={handleLogin}>登入</button>
+                                                <button type="submit" className="bg-blue-500 text-white rounded-md px-3 py-3 hover:bg-blue-600 mt-8 font-semibold" onClick={handleOpenSignUpform}>建立帳戶</button>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

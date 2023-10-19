@@ -1,13 +1,16 @@
-import  {useEffect, useState} from 'react';
+import  {useEffect, useState,useContext} from 'react';
 import Modal from './Modal';
 import { Icon } from '@iconify/react';
 import {toast} from "react-toastify";
 import { useNavigate } from 'react-router-dom';
+import AuthContext from "./AuthContext.jsx";
+import {UnLoginText_Move} from "../main.jsx";
 
 const Acc = () => {
     const [Accounts, setAccounts] = useState([]);
     const navigate = useNavigate();
-
+    const {auth} = useContext(AuthContext);
+    const isLoggedIn = auth.loggedIn;
 
     const fetchAccsData = async () => {
         try {
@@ -122,8 +125,6 @@ const Acc = () => {
     };
 
     //編輯
-
-
     const handleEditInputChange = (event, name) => {
         const newValue = event.target.value;
         setEditAccount((prevAccount) => ({
@@ -250,8 +251,9 @@ const Acc = () => {
         }
     };
 
-
     return (
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {!isLoggedIn ? ( <UnLoginText_Move />) : (
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 w-auto">
             <h1 className="text-3xl font-semibold mb-4 m-4">Account List</h1>
             {/*新增表單*/}
@@ -546,7 +548,7 @@ const Acc = () => {
                     下一頁
                 </button>
             </div>
-        </div>
+        </div>)}</div>
     );
 };
 

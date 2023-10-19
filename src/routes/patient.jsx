@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
+import AuthContext from "./AuthContext.jsx";
+import {UnLoginText_Move} from "../main.jsx";
 
 const Patient = () => {
     const [patient, setPatient] = useState([]);
@@ -15,6 +17,8 @@ const Patient = () => {
     });
     const [searchResults, setSearchResults] = useState([]);
     const [allPatientData, setAllPatientData] = useState([]);
+    const {auth,setauth} = useContext(AuthContext);
+    const isLoggedIn = auth.loggedIn;
 
     const fetchPatientData = async () => {
         try {
@@ -159,11 +163,6 @@ const Patient = () => {
         }
     };
 
-
-
-
-
-
     const nextPage = () => {
         if (currentPage < Math.ceil(patient.length / patientPerPage)) {
             setCurrentPage(currentPage + 1);
@@ -179,9 +178,23 @@ const Patient = () => {
         }
     };
 
-
+    //監聽瀏覽器返回鍵
+    window.onpopstate = function(event) {
+        let current_step = 0;
+        current_step = event.state.idx;
+        console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+        if (current_step === 2) {
+            toast.warning("已無畫面可返回，請先按登出，謝謝。", {
+                className: "font-semibold",
+                autoClose: 2500,
+            });
+            window.history.pushState({idx: 0}, "", window.location.origin + "/patient");
+        }
+    }
 
     return (
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {!isLoggedIn ? ( <UnLoginText_Move />) : (
         <div className="container mx-auto px-6 sm:px-6 lg:px-8 ">
             <h1 className="text-3xl font-semibold ml-4">Patient List</h1>
             <div className="flex justify-center items-center ">
@@ -392,7 +405,7 @@ const Patient = () => {
             </div>
 
 
-        </div>
+        </div>)}</div>
     );
 };
 

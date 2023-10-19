@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 const router = Router();
 
+
 router.get('/trans', async (req, res) => {
     try {
         // 假設連接池在 app.locals.pool 中可用
@@ -153,7 +154,6 @@ router.get('/accounts', async (req, res) => {
     }
 });
 
-//ID, AccID, Password, Balance, BranchID,AccType,CONVERT(varchar, UP_Date, 23) AS UP_DATETIME, UP_User
 router.post('/accounts', async (req, res) => {
     try {
         const pool = req.app.locals.pool;
@@ -206,7 +206,6 @@ router.get('/accounts/:ID', async (req, res) => {
     }
 });
 
-
 router.delete('/accounts/:ID', async (req, res) => {
     try {
         const pool = req.app.locals.pool;
@@ -228,7 +227,6 @@ router.delete('/accounts/:ID', async (req, res) => {
     }
 });
 
-//ID, AccID, Password, Balance, BranchID,AccType,CONVERT(varchar, UP_Date, 23) AS UP_DATETIME, UP_User
 router.put('/accounts/:ID', async (req, res) => {
     try {
         const pool = req.app.locals.pool;
@@ -414,18 +412,18 @@ router.post('/login', async (req, res) => {
         if (result.recordset.length > 0) {
             if (AccID === 'admin' && password === 'admin') {
                 req.session.user = { AccID: AccID };
-                res.json({ success: true, message: 'Login successful' });
+                res.json({ success: true, message: 'Login successful'});
             } else {
                 const isValid = await bcrypt.compare(password, result.recordset[0].password)
                 if (isValid) {
                     req.session.user = {AccID: AccID};
                     res.json({success: true, message: `Login successful ${AccID}}`});
                 } else {
-                    res.status(401).json({success: false, message: 'Invalid Info'});
+                    res.status(400).json({success: false, message: 'Missing Username or Password'});
                 }
             }
         } else {
-            res.status(401).json({ success: false, message: 'Invalid Info' });
+            res.status(401).json({ success: false, message: 'Unauthorized' });
         }
     } catch (err) {
         console.error('Error during login:', err);

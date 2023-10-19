@@ -10,7 +10,6 @@ const Logout = async (e) => {
         const data = await response.json();
         console.log('Data:',data);
         if (data.success) {
-            document.cookie = "loggedIn=false";
             document.cookie = "AccID=";
             window.location.href = '/';
         } else {

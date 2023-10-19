@@ -46,7 +46,7 @@ INSERT INTO Customer
 (ID, PWD, Lname,FName,BDate,Sex,Address,City,Country,UP_Date,UP_User)
 VALUES('003', HASHBYTES('SHA2_512',N'123'), 'DW', 'Wang', '19981002', 'M', 'Beitou', 'Taipei', 'Taiwan', @CURRENT_TS, '0');
 GO
--- drop TABLE Account
+
 CREATE TABLE Account
 (
     ID int PRIMARY KEY,

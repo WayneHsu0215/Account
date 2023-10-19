@@ -40,6 +40,7 @@ const Layout = ({ children }) => {
         setIsSidebarHovered(false);
     };
 
+
     const cu = getCookie("AccID");
     return (
         <div className={`flex h-screen`}>
